@@ -1,0 +1,494 @@
+<!doctype html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>בקרת איכות — אב-טיפוס</title>
+<style>
+  :root {
+    --page:        #f9f9f7;
+    --surface:     #fcfcfb;
+    --ink:         #0b0b0b;
+    --ink-2:       #52514e;
+    --muted:       #898781;
+    --grid:        #e1e0d9;
+    --baseline:    #c3c2b7;
+    --border:      rgba(11,11,11,.10);
+    --series:      #2a78d6;   /* כחול — סדרה יחידה בכל הגרפים */
+    --series-deep: #104281;   /* הדגשת צוואר הבקבוק — צעד כהה של אותו כחול */
+    --good:        #0ca30c;
+    --good-text:   #006300;
+    --critical:    #d03b3b;
+    --track:       #f0efec;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --page:        #0d0d0d;
+      --surface:     #1a1a19;
+      --ink:         #ffffff;
+      --ink-2:       #c3c2b7;
+      --muted:       #898781;
+      --grid:        #2c2c2a;
+      --baseline:    #383835;
+      --border:      rgba(255,255,255,.10);
+      --series:      #3987e5;
+      --series-deep: #86b6ef;
+      --good:        #0ca30c;
+      --good-text:   #0ca30c;
+      --critical:    #d03b3b;
+      --track:       #262624;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--page); color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── סרגל עליון ── */
+  header {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    padding: 12px 20px; background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 20;
+  }
+  header h1 { font-size: 17px; font-weight: 700; }
+  header .sub { font-size: 12.5px; color: var(--muted); }
+  .tabs { display: flex; gap: 8px; margin-inline-start: auto; }
+  .tab {
+    border: 1px solid var(--border); background: transparent; color: var(--ink-2);
+    font: inherit; font-size: 15px; font-weight: 600;
+    padding: 10px 18px; border-radius: 10px; cursor: pointer;
+  }
+  .tab.active { background: var(--series); border-color: var(--series); color: #fff; }
+
+  main { max-width: 1080px; margin: 0 auto; padding: 20px; }
+  [hidden] { display: none !important; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 18px 20px;
+  }
+  .card h2 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+  .card .hint { font-size: 12.5px; color: var(--muted); margin-bottom: 14px; }
+
+  /* ══════════ מסך עובד ══════════ */
+  .worker-note {
+    font-size: 13px; color: var(--ink-2); background: var(--surface);
+    border: 1px dashed var(--baseline); border-radius: 10px;
+    padding: 8px 14px; margin-bottom: 16px;
+  }
+  .stations { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  .station {
+    border: 2px solid var(--border); background: var(--surface); color: var(--ink);
+    border-radius: 14px; padding: 14px 8px 10px; cursor: pointer; font: inherit;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .station .num { font-size: 15px; font-weight: 800; color: var(--muted); }
+  .station .ico { font-size: 44px; line-height: 1.15; }
+  .station .cap { font-size: 11.5px; color: var(--muted); text-align: center; }
+  .station.active { border-color: var(--series); box-shadow: 0 0 0 3px color-mix(in srgb, var(--series) 25%, transparent); }
+  .station.active .num { color: var(--series); }
+
+  .unit-card {
+    display: flex; align-items: center; justify-content: center; gap: 26px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px; margin-bottom: 16px;
+  }
+  .barcode { display: flex; align-items: stretch; height: 62px; }
+  .barcode span { background: var(--ink); margin-inline-end: 3px; }
+  .unit-id { font-size: 40px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: 1px; }
+  .unit-lbl { font-size: 12.5px; color: var(--muted); }
+
+  .big-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .big-btn {
+    border: none; border-radius: 18px; cursor: pointer; font: inherit; color: #fff;
+    min-height: 200px; font-size: 92px; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .big-btn:active { transform: scale(.97); }
+  .big-btn.ok  { background: var(--good); }
+  .big-btn.bad { background: var(--critical); }
+
+  /* בחירת תקלה */
+  .overlay {
+    position: fixed; inset: 0; z-index: 40; background: color-mix(in srgb, var(--page) 88%, black);
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+  }
+  .defects { display: grid; grid-template-columns: repeat(2, minmax(150px, 230px)); gap: 16px; }
+  .defect {
+    border: 2px solid var(--border); background: var(--surface);
+    border-radius: 18px; cursor: pointer; font: inherit; color: var(--ink);
+    padding: 26px 10px 16px; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .defect .ico { font-size: 74px; line-height: 1.1; }
+  .defect .cap { font-size: 12px; color: var(--muted); }
+  .defect:active { transform: scale(.96); }
+  .defect.cancel { grid-column: 1 / -1; min-height: 64px; padding: 10px; flex-direction: row; font-size: 34px; }
+
+  /* הבזק אישור */
+  .flash {
+    position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center;
+    font-size: 150px; color: #fff; pointer-events: none;
+  }
+  .flash.ok  { background: color-mix(in srgb, var(--good) 92%, black); }
+  .flash.bad { background: color-mix(in srgb, var(--critical) 92%, black); }
+
+  /* ══════════ דשבורד ══════════ */
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; }
+  .kpi .lbl { font-size: 12.5px; color: var(--muted); margin-bottom: 6px; }
+  .kpi .val { font-size: 30px; font-weight: 800; line-height: 1.1; }
+  .kpi .val.good { color: var(--good-text); }
+  .kpi .sub { font-size: 12px; color: var(--ink-2); margin-top: 4px; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+
+  /* גרף עמודות אופקי (HTML) */
+  .hbar { display: grid; grid-template-columns: 118px 1fr 34px; align-items: center; gap: 10px; padding: 7px 0; }
+  .hbar .lbl { font-size: 13px; color: var(--ink-2); }
+  .hbar .lbl .em { margin-inline-end: 6px; }
+  .hbar .track { display: block; background: var(--track); border-radius: 4px; height: 22px; position: relative; overflow: hidden; }
+  .hbar .fill {
+    display: block; background: var(--series); height: 100%;
+    border-start-end-radius: 4px; border-end-end-radius: 4px;
+  }
+  .hbar.max .fill { background: var(--series-deep); }
+  .hbar .val { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .hbar.max .lbl, .hbar.max .val { font-weight: 800; color: var(--ink); }
+  .badge {
+    display: inline-block; font-size: 10.5px; font-weight: 700; color: var(--ink);
+    border: 1px solid var(--baseline); border-radius: 99px; padding: 1px 8px; margin-inline-start: 6px;
+  }
+
+  /* ציר זמן — עמודות אנכיות */
+  .timeline { direction: ltr; display: flex; align-items: flex-end; gap: 6px; height: 150px; border-bottom: 1px solid var(--baseline); padding: 0 4px; }
+  .taxis { direction: ltr; }
+  .tcol { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; }
+  .tcol .bar {
+    width: 100%; max-width: 44px; background: var(--series);
+    border-start-start-radius: 4px; border-start-end-radius: 4px;
+  }
+  .tcol .n { font-size: 11.5px; color: var(--ink-2); font-weight: 700; margin-bottom: 3px; font-variant-numeric: tabular-nums; }
+  .taxis { display: flex; gap: 6px; padding: 5px 4px 0; }
+  .taxis span { flex: 1; text-align: center; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  /* טבלה */
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th { text-align: start; font-size: 12px; color: var(--muted); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--baseline); }
+  td { padding: 8px; border-bottom: 1px solid var(--grid); }
+  td.time { font-variant-numeric: tabular-nums; color: var(--ink-2); }
+  td .em { font-size: 20px; margin-inline-end: 8px; vertical-align: -3px; }
+  tr.live td { background: color-mix(in srgb, var(--series) 8%, transparent); }
+
+  /* Tooltip */
+  #tip {
+    position: fixed; z-index: 60; pointer-events: none; display: none;
+    background: var(--ink); color: var(--page);
+    font-size: 12.5px; padding: 7px 11px; border-radius: 8px; max-width: 260px;
+  }
+
+  footer { text-align: center; font-size: 12px; color: var(--muted); padding: 10px 0 26px; }
+
+  @media (max-width: 760px) {
+    .stations, .kpis { grid-template-columns: repeat(2, 1fr); }
+    .grid2 { grid-template-columns: 1fr; }
+    .big-btn { min-height: 150px; font-size: 70px; }
+    .unit-id { font-size: 30px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>מערכת בקרת איכות — קו ייצור אלומיניום</h1>
+    <div class="sub">אב-טיפוס להדגמה · הנתונים מדומים</div>
+  </div>
+  <nav class="tabs">
+    <button class="tab active" id="tabWorker">👷 עמדת עובד</button>
+    <button class="tab" id="tabDash">📊 דשבורד מנהלים</button>
+  </nav>
+</header>
+
+<!-- ══════════ מסך עובד ══════════ -->
+<main id="workerView">
+  <div class="worker-note">
+    💡 <b>מה שהעובד רואה:</b> אפס טקסט — רק מספר תחנה, אייקונים וצבעים. הכיתוב הקטן כאן הוא לצורך ההדגמה בלבד.
+  </div>
+  <div class="stations" id="stationPicker"></div>
+  <div class="unit-card">
+    <div>
+      <div class="unit-lbl">יחידה נסרקה (בדמו — מדומה)</div>
+      <div class="unit-id" id="unitId"></div>
+    </div>
+    <div class="barcode" id="barcode" aria-hidden="true"></div>
+  </div>
+  <div class="big-btns">
+    <button class="big-btn ok" id="btnOk" aria-label="תקין">✓</button>
+    <button class="big-btn bad" id="btnBad" aria-label="תקלה">✗</button>
+  </div>
+</main>
+
+<!-- ══════════ דשבורד ══════════ -->
+<main id="dashView" hidden>
+  <div class="kpis" id="kpis"></div>
+  <div class="grid2">
+    <section class="card">
+      <h2>תקלות לפי תחנה</h2>
+      <div class="hint">איפה צוואר הבקבוק? רחפו על עמודה לפירוט</div>
+      <div id="byStation"></div>
+    </section>
+    <section class="card">
+      <h2>תקלות לפי סוג</h2>
+      <div class="hint">מה הבעיה הנפוצה ביותר היום</div>
+      <div id="byType"></div>
+    </section>
+  </div>
+  <section class="card" style="margin-bottom:12px">
+    <h2>תקלות לאורך היום</h2>
+    <div class="hint">מספר תקלות בכל שעה — רחפו לפירוט</div>
+    <div class="timeline" id="timeline"></div>
+    <div class="taxis" id="taxis"></div>
+  </section>
+  <section class="card">
+    <h2>סריקות אדומות אחרונות</h2>
+    <div class="hint">שורות מודגשות = נקלטו עכשיו בהדגמה החיה</div>
+    <table>
+      <thead><tr><th>שעה</th><th>תחנה</th><th>יחידה</th><th>תקלה</th></tr></thead>
+      <tbody id="recentRows"></tbody>
+    </table>
+  </section>
+</main>
+
+<div id="tip"></div>
+<footer>אב-טיפוס · כל הנתונים מדומים לצורך הדגמה בלבד</footer>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   הגדרות — לעריכה: שמות תחנות, אייקונים וסוגי תקלות
+   ═══════════════════════════════════════════════════════════ */
+const STATIONS = [
+  { id: 'cut',   num: 1, icon: '🪚', name: 'חיתוך פרופילים',  cap: 'מסור כפול/חד-ראש' },
+  { id: 'mono',  num: 2, icon: '🔩', name: 'הרכבת מונובלוק', cap: 'הרכבת מונובלוק' },
+  { id: 'sash',  num: 3, icon: '🖼️', name: 'הרכבת כנף',      cap: 'הרכבת כנף' },
+  { id: 'glaze', num: 4, icon: '🪟', name: 'זיגוג',           cap: 'זיגוג' },
+];
+const DEFECTS = [
+  { id: 'measure', icon: '📐', name: 'מידה / חיתוך פגום' },
+  { id: 'drain',   icon: '💧', name: 'ניקוז / קדח חסר' },
+  { id: 'seal',    icon: '🧴', name: 'איטום / סיליקון / קוביה' },
+  { id: 'hw',      icon: '⚙️', name: 'אביזרים / גלגלים / נעילה' },
+];
+
+/* ── נתוני יום דמו (דטרמיניסטיים — אותו יום בכל פתיחה) ── */
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+const rnd = mulberry32(20260712);
+
+// הסתברות תקלה לכל תחנה — "הרכבת מונובלוק" היא צוואר הבקבוק המכוון
+const DEFECT_RATE = { cut: .05, mono: .17, sash: .07, glaze: .04 };
+// התפלגות סוגי תקלה לכל תחנה
+const TYPE_W = {
+  cut:   { measure: .80, drain: .10, seal: .05, hw: .05 },
+  mono:  { measure: .10, drain: .30, seal: .35, hw: .25 },
+  sash:  { measure: .15, drain: .10, seal: .25, hw: .50 },
+  glaze: { measure: .10, drain: .10, seal: .70, hw: .10 },
+};
+function pickType(st) {
+  let r = rnd(), acc = 0;
+  for (const d of DEFECTS) { acc += TYPE_W[st][d.id]; if (r < acc) return d.id; }
+  return DEFECTS[0].id;
+}
+
+const scans = [];
+let unitSeq = 1000;
+for (let h = 6; h <= 16; h++) {
+  for (const st of STATIONS) {
+    const n = 5 + Math.floor(rnd() * 4);            // 5–8 יחידות לשעה בתחנה
+    for (let i = 0; i < n; i++) {
+      const lunchSpike = (h === 13 || h === 14) ? 1.8 : 1;  // זינוק אחרי הפסקת צהריים
+      const bad = rnd() < DEFECT_RATE[st.id] * lunchSpike;
+      scans.push({
+        h, m: Math.floor(rnd() * 60),
+        station: st.id,
+        unit: 'A-' + (unitSeq++),
+        ok: !bad,
+        type: bad ? pickType(st.id) : null,
+        live: false,
+      });
+    }
+  }
+}
+scans.sort((a, b) => a.h - b.h || a.m - b.m);
+
+/* ═══════════ מסך עובד ═══════════ */
+let currentStation = STATIONS[0].id;
+let liveUnit = unitSeq;
+
+const $ = (id) => document.getElementById(id);
+
+function drawStations() {
+  $('stationPicker').innerHTML = STATIONS.map(s => `
+    <button class="station ${s.id === currentStation ? 'active' : ''}" data-st="${s.id}">
+      <span class="num">${s.num}</span>
+      <span class="ico">${s.icon}</span>
+      <span class="cap">${s.name}</span>
+    </button>`).join('');
+  $('stationPicker').querySelectorAll('.station').forEach(b =>
+    b.onclick = () => { currentStation = b.dataset.st; drawStations(); });
+}
+
+function newUnit() {
+  $('unitId').textContent = 'A-' + liveUnit;
+  // ברקוד דקורטיבי — רוחבי פסים אקראיים
+  let bars = '';
+  for (let i = 0; i < 24; i++) bars += `<span style="width:${1 + Math.floor(Math.random() * 4)}px"></span>`;
+  $('barcode').innerHTML = bars;
+}
+
+function flash(kind, icon) {
+  const el = document.createElement('div');
+  el.className = 'flash ' + kind;
+  el.textContent = icon;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 650);
+}
+
+function record(ok, type) {
+  const now = new Date();
+  scans.push({
+    h: now.getHours(), m: now.getMinutes(),
+    station: currentStation, unit: 'A-' + liveUnit,
+    ok, type: type || null, live: true,
+  });
+  liveUnit++;
+  newUnit();
+}
+
+$('btnOk').onclick = () => { record(true); flash('ok', '✓'); };
+$('btnBad').onclick = () => {
+  const ov = document.createElement('div');
+  ov.className = 'overlay';
+  ov.innerHTML = `<div class="defects">
+    ${DEFECTS.map(d => `<button class="defect" data-d="${d.id}"><span class="ico">${d.icon}</span><span class="cap">${d.name}</span></button>`).join('')}
+    <button class="defect cancel" data-d="">↩</button>
+  </div>`;
+  document.body.appendChild(ov);
+  ov.querySelectorAll('.defect').forEach(b => b.onclick = () => {
+    ov.remove();
+    if (b.dataset.d) { record(false, b.dataset.d); flash('bad', DEFECTS.find(d => d.id === b.dataset.d).icon); }
+  });
+};
+
+/* ═══════════ דשבורד ═══════════ */
+const tip = $('tip');
+function bindTip(el, html) {
+  el.onmousemove = (e) => {
+    tip.innerHTML = html; tip.style.display = 'block';
+    const x = Math.min(e.clientX + 14, innerWidth - tip.offsetWidth - 8);
+    tip.style.left = x + 'px'; tip.style.top = (e.clientY + 16) + 'px';
+  };
+  el.onmouseleave = () => tip.style.display = 'none';
+}
+
+function renderDashboard() {
+  const total = scans.length;
+  const bad = scans.filter(s => !s.ok);
+  const passRate = ((total - bad.length) / total * 100).toFixed(1);
+
+  const byStation = STATIONS.map(st => ({
+    st, n: bad.filter(s => s.station === st.id).length,
+    scanned: scans.filter(s => s.station === st.id).length,
+  }));
+  const worst = byStation.reduce((a, b) => b.n > a.n ? b : a);
+
+  $('kpis').innerHTML = `
+    <div class="kpi"><div class="lbl">יחידות נסרקו היום</div><div class="val">${total}</div><div class="sub">בכל 4 התחנות</div></div>
+    <div class="kpi"><div class="lbl">אחוז תקינות</div><div class="val good">${passRate}%</div><div class="sub">✓ ירוק מכלל הסריקות</div></div>
+    <div class="kpi"><div class="lbl">סה״כ תקלות</div><div class="val">${bad.length}</div><div class="sub">✗ אדום היום</div></div>
+    <div class="kpi"><div class="lbl">התחנה הבעייתית ביותר</div><div class="val">${worst.st.icon}</div><div class="sub"><b>${worst.st.name}</b> · ${worst.n} תקלות</div></div>`;
+
+  // תקלות לפי תחנה
+  const maxSt = Math.max(...byStation.map(x => x.n), 1);
+  $('byStation').innerHTML = byStation.map(x => `
+    <div class="hbar ${x === worst ? 'max' : ''}" data-st="${x.st.id}">
+      <span class="lbl"><span class="em">${x.st.icon}</span>${x.st.name}${x === worst ? '<span class="badge">צוואר בקבוק</span>' : ''}</span>
+      <span class="track"><span class="fill" style="width:${x.n / maxSt * 100}%"></span></span>
+      <span class="val">${x.n}</span>
+    </div>`).join('');
+  $('byStation').querySelectorAll('.hbar').forEach(row => {
+    const x = byStation.find(y => y.st.id === row.dataset.st);
+    const brk = DEFECTS.map(d => `${d.icon} ${bad.filter(s => s.station === x.st.id && s.type === d.id).length}`).join(' · ');
+    bindTip(row, `<b>${x.st.name}</b><br>נסרקו: ${x.scanned} · תקלות: ${x.n}<br>${brk}`);
+  });
+
+  // תקלות לפי סוג
+  const byType = DEFECTS.map(d => ({ d, n: bad.filter(s => s.type === d.id).length }));
+  const maxT = Math.max(...byType.map(x => x.n), 1);
+  $('byType').innerHTML = byType.map(x => `
+    <div class="hbar" data-d="${x.d.id}">
+      <span class="lbl"><span class="em">${x.d.icon}</span>${x.d.name}</span>
+      <span class="track"><span class="fill" style="width:${x.n / maxT * 100}%"></span></span>
+      <span class="val">${x.n}</span>
+    </div>`).join('');
+  $('byType').querySelectorAll('.hbar').forEach(row => {
+    const x = byType.find(y => y.d.id === row.dataset.d);
+    const brk = STATIONS.map(st => `${st.icon} ${bad.filter(s => s.type === x.d.id && s.station === st.id).length}`).join(' · ');
+    bindTip(row, `<b>${x.d.icon} ${x.d.name}</b><br>סה״כ: ${x.n}<br>${brk}`);
+  });
+
+  // ציר זמן
+  const lastH = Math.max(17, ...scans.map(s => s.h));
+  const hours = [];
+  for (let h = 6; h <= lastH; h++) hours.push({ h, n: bad.filter(s => s.h === h).length });
+  const maxH = Math.max(...hours.map(x => x.n), 1);
+  $('timeline').innerHTML = hours.map(x => `
+    <div class="tcol" data-h="${x.h}">
+      ${x.n ? `<span class="n">${x.n}</span>` : ''}
+      <div class="bar" style="height:${x.n / maxH * 100}%"></div>
+    </div>`).join('');
+  $('taxis').innerHTML = hours.map(x => `<span>${String(x.h).padStart(2, '0')}</span>`).join('');
+  $('timeline').querySelectorAll('.tcol').forEach(col => {
+    const x = hours.find(y => y.h == col.dataset.h);
+    bindTip(col, `<b>${String(x.h).padStart(2, '0')}:00–${String(x.h).padStart(2, '0')}:59</b><br>תקלות: ${x.n}`);
+  });
+
+  // טבלת סריקות אדומות אחרונות
+  const recent = bad.slice(-10).reverse();
+  $('recentRows').innerHTML = recent.map(s => {
+    const st = STATIONS.find(x => x.id === s.station);
+    const d = DEFECTS.find(x => x.id === s.type);
+    return `<tr class="${s.live ? 'live' : ''}">
+      <td class="time">${String(s.h).padStart(2, '0')}:${String(s.m).padStart(2, '0')}</td>
+      <td>${st.icon} ${st.name}</td>
+      <td>${s.unit}</td>
+      <td><span class="em">${d.icon}</span>${d.name}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ═══════════ מעבר בין מסכים ═══════════ */
+function show(view) {
+  $('workerView').hidden = view !== 'worker';
+  $('dashView').hidden = view !== 'dash';
+  $('tabWorker').classList.toggle('active', view === 'worker');
+  $('tabDash').classList.toggle('active', view === 'dash');
+  if (view === 'dash') renderDashboard();
+}
+$('tabWorker').onclick = () => show('worker');
+$('tabDash').onclick = () => show('dash');
+
+drawStations();
+newUnit();
+if (location.hash === '#dash') show('dash');
+</script>
+</body>
+</html>
