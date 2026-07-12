@@ -162,6 +162,22 @@
     border: 1px solid var(--baseline); border-radius: 99px; padding: 1px 8px; margin-inline-start: 6px;
   }
 
+  /* פירוט לפי תחנה — small multiples */
+  .st-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .st-card { border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+  .st-card.max { border-color: var(--series-deep); box-shadow: 0 0 0 2px color-mix(in srgb, var(--series-deep) 25%, transparent); }
+  .st-card .head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .st-card .head .ico { font-size: 26px; }
+  .st-card .head .nm { font-size: 13.5px; font-weight: 700; line-height: 1.2; }
+  .st-card .stats { font-size: 12px; color: var(--ink-2); margin-bottom: 10px; }
+  .st-card .stats b.bad { color: var(--critical); }
+  .st-card .mini { display: grid; grid-template-columns: 24px 1fr 20px; align-items: center; gap: 7px; padding: 4px 0; }
+  .st-card .mini .em { font-size: 17px; text-align: center; }
+  .st-card .mini .track { display: block; background: var(--track); border-radius: 4px; height: 14px; overflow: hidden; }
+  .st-card .mini .fill { display: block; background: var(--series); height: 100%; border-start-end-radius: 4px; border-end-end-radius: 4px; }
+  .st-card .mini .val { font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .st-card .mini.zero .val { color: var(--muted); font-weight: 400; }
+
   /* ציר זמן — עמודות אנכיות */
   .timeline { direction: ltr; display: flex; align-items: flex-end; gap: 6px; height: 150px; border-bottom: 1px solid var(--baseline); padding: 0 4px; }
   .taxis { direction: ltr; }
@@ -192,7 +208,7 @@
   footer { text-align: center; font-size: 12px; color: var(--muted); padding: 10px 0 26px; }
 
   @media (max-width: 760px) {
-    .stations, .kpis { grid-template-columns: repeat(2, 1fr); }
+    .stations, .kpis, .st-grid { grid-template-columns: repeat(2, 1fr); }
     .grid2 { grid-template-columns: 1fr; }
     .big-btn { min-height: 150px; font-size: 70px; }
     .unit-id { font-size: 30px; }
@@ -246,6 +262,11 @@
       <div id="byType"></div>
     </section>
   </div>
+  <section class="card" style="margin-bottom:12px">
+    <h2>פירוט לפי תחנה</h2>
+    <div class="hint">מה בדיוק קורה בכל תחנה — כל הכרטיסים באותו קנה מידה, להשוואה ישירה</div>
+    <div class="st-grid" id="stationDetail"></div>
+  </section>
   <section class="card" style="margin-bottom:12px">
     <h2>תקלות לאורך היום</h2>
     <div class="hint">מספר תקלות בכל שעה — רחפו לפירוט</div>
@@ -428,6 +449,28 @@ function renderDashboard() {
     const x = byStation.find(y => y.st.id === row.dataset.st);
     const brk = DEFECTS.map(d => `${d.icon} ${bad.filter(s => s.station === x.st.id && s.type === d.id).length}`).join(' · ');
     bindTip(row, `<b>${x.st.name}</b><br>נסרקו: ${x.scanned} · תקלות: ${x.n}<br>${brk}`);
+  });
+
+  // פירוט לפי תחנה — כרטיס לכל תחנה, קנה מידה משותף לכולם
+  const cell = (stId, dId) => bad.filter(s => s.station === stId && s.type === dId).length;
+  const maxCell = Math.max(1, ...STATIONS.flatMap(st => DEFECTS.map(d => cell(st.id, d.id))));
+  $('stationDetail').innerHTML = byStation.map(x => `
+    <div class="st-card ${x === worst ? 'max' : ''}">
+      <div class="head"><span class="ico">${x.st.icon}</span><span class="nm">${x.st.name}</span></div>
+      <div class="stats">נסרקו ${x.scanned} · <b class="bad">${x.n} תקלות</b> · ${(100 - x.n / x.scanned * 100).toFixed(0)}% תקין</div>
+      ${DEFECTS.map(d => {
+        const n = cell(x.st.id, d.id);
+        return `<div class="mini ${n ? '' : 'zero'}" data-st="${x.st.id}" data-d="${d.id}">
+          <span class="em">${d.icon}</span>
+          <span class="track"><span class="fill" style="width:${n / maxCell * 100}%"></span></span>
+          <span class="val">${n}</span>
+        </div>`;
+      }).join('')}
+    </div>`).join('');
+  $('stationDetail').querySelectorAll('.mini').forEach(row => {
+    const st = STATIONS.find(s => s.id === row.dataset.st);
+    const d = DEFECTS.find(x => x.id === row.dataset.d);
+    bindTip(row, `<b>${st.name}</b><br>${d.icon} ${d.name}: ${cell(st.id, d.id)}`);
   });
 
   // תקלות לפי סוג
