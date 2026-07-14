@@ -3,58 +3,62 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>בקרת איכות — אב-טיפוס</title>
+<title>בקרת איכות — קוסטיקה</title>
 <style>
   :root {
     --page:        #f9f9f7;
     --surface:     #fcfcfb;
+    --sunk:        #f0efec;
     --ink:         #0b0b0b;
     --ink-2:       #52514e;
     --muted:       #898781;
     --grid:        #e1e0d9;
     --baseline:    #c3c2b7;
     --border:      rgba(11,11,11,.10);
-    --series:      #2a78d6;   /* כחול — סדרה יחידה בכל הגרפים */
-    --series-deep: #104281;   /* הדגשת צוואר הבקבוק — צעד כהה של אותו כחול */
+
+    --series:      #2a78d6;
+    --series-deep: #104281;
+    --s100:#cde2fb; --s200:#9ec5f4; --s300:#6da7ec; --s400:#3987e5;
+    --s500:#256abf; --s600:#184f95; --s700:#0d366b;
+
     --good:        #0ca30c;
     --good-text:   #006300;
+    --serious:     #b35a2c;
     --critical:    #d03b3b;
-    --track:       #f0efec;
+    --crit-text:   #b12f2f;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --page:        #0d0d0d;
-      --surface:     #1a1a19;
-      --ink:         #ffffff;
-      --ink-2:       #c3c2b7;
-      --muted:       #898781;
-      --grid:        #2c2c2a;
-      --baseline:    #383835;
-      --border:      rgba(255,255,255,.10);
-      --series:      #3987e5;
-      --series-deep: #86b6ef;
-      --good:        #0ca30c;
-      --good-text:   #0ca30c;
-      --critical:    #d03b3b;
-      --track:       #262624;
+      --page:#0d0d0d; --surface:#1a1a19; --sunk:#262624;
+      --ink:#ffffff; --ink-2:#c3c2b7; --muted:#898781;
+      --grid:#2c2c2a; --baseline:#383835; --border:rgba(255,255,255,.10);
+      --series:#3987e5; --series-deep:#86b6ef;
+      --s100:#0d366b; --s200:#184f95; --s300:#256abf; --s400:#2a78d6;
+      --s500:#3987e5; --s600:#6da7ec; --s700:#9ec5f4;
+      --good:#0ca30c; --good-text:#0ca30c;
+      --serious:#ec835a; --critical:#d03b3b; --crit-text:#e26a6a;
     }
   }
   * { box-sizing: border-box; margin: 0; }
+  html { background: var(--page); direction: rtl; }
   body {
     font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-    background: var(--page); color: var(--ink);
-    min-height: 100vh;
+    background: var(--page); color: var(--ink); direction: rtl;
   }
 
-  /* ── סרגל עליון ── */
   header {
-    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
     padding: 12px 20px; background: var(--surface);
     border-bottom: 1px solid var(--border);
     position: sticky; top: 0; z-index: 20;
   }
   header h1 { font-size: 17px; font-weight: 700; }
   header .sub { font-size: 12.5px; color: var(--muted); }
+  .demo-badge {
+    font-size: 11px; font-weight: 700; color: var(--crit-text);
+    border: 1px solid var(--critical); border-radius: 99px;
+    padding: 2px 9px; white-space: nowrap;
+  }
   .tabs { display: flex; gap: 8px; margin-inline-start: auto; }
   .tab {
     border: 1px solid var(--border); background: transparent; color: var(--ink-2);
@@ -62,8 +66,9 @@
     padding: 10px 18px; border-radius: 10px; cursor: pointer;
   }
   .tab.active { background: var(--series); border-color: var(--series); color: #fff; }
+  .tab:focus-visible { outline: 2px solid var(--series); outline-offset: 2px; }
 
-  main { max-width: 1080px; margin: 0 auto; padding: 20px; }
+  main { max-width: 1120px; margin: 0 auto; padding: 20px; }
   [hidden] { display: none !important; }
 
   .card {
@@ -71,157 +76,226 @@
     border-radius: 14px; padding: 18px 20px;
   }
   .card h2 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
-  .card .hint { font-size: 12.5px; color: var(--muted); margin-bottom: 14px; }
+  .card .hint { font-size: 12.5px; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
 
   /* ══════════ מסך עובד ══════════ */
   .worker-note {
     font-size: 13px; color: var(--ink-2); background: var(--surface);
     border: 1px dashed var(--baseline); border-radius: 10px;
-    padding: 8px 14px; margin-bottom: 16px;
+    padding: 9px 14px; margin-bottom: 16px; line-height: 1.55;
   }
-  .stations { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  .stations { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 16px; }
   .station {
     border: 2px solid var(--border); background: var(--surface); color: var(--ink);
-    border-radius: 14px; padding: 14px 8px 10px; cursor: pointer; font: inherit;
-    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    border-radius: 14px; padding: 12px 6px 10px; cursor: pointer; font: inherit;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
   }
-  .station .num { font-size: 15px; font-weight: 800; color: var(--muted); }
-  .station .ico { font-size: 44px; line-height: 1.15; }
-  .station .cap { font-size: 11.5px; color: var(--muted); text-align: center; }
+  .station .num { font-size: 12px; font-weight: 800; color: var(--muted); }
+  .station .ico { font-size: 36px; line-height: 1.15; }
+  .station .nm { font-size: 12.5px; font-weight: 700; text-align: center; line-height: 1.25; }
+  .station .cap { font-size: 10.5px; color: var(--muted); text-align: center; line-height: 1.3; }
   .station.active { border-color: var(--series); box-shadow: 0 0 0 3px color-mix(in srgb, var(--series) 25%, transparent); }
   .station.active .num { color: var(--series); }
+  .station:focus-visible { outline: 2px solid var(--series); outline-offset: 2px; }
+
+  .stage {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 16px 18px; margin-bottom: 14px;
+  }
+  .steps { display: flex; gap: 8px; margin-bottom: 14px; }
+  .pip { flex: 1; height: 5px; border-radius: 3px; background: var(--grid); }
+  .pip.on { background: var(--series); }
+  .ask { font-size: 21px; font-weight: 800; margin-bottom: 4px; }
+  .ask-sub { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .from {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--sunk); border-radius: 99px; padding: 6px 14px 6px 10px;
+    margin-top: 12px; font-size: 14px; font-weight: 700;
+  }
+  .from .ico { font-size: 21px; }
+  .from .lbl { color: var(--muted); font-weight: 600; font-size: 12.5px; }
 
   .unit-card {
-    display: flex; align-items: center; justify-content: center; gap: 26px;
+    display: flex; align-items: center; justify-content: center; gap: 24px;
     background: var(--surface); border: 1px solid var(--border);
-    border-radius: 14px; padding: 20px; margin-bottom: 16px;
+    border-radius: 14px; padding: 14px; margin-bottom: 14px;
   }
-  .barcode { display: flex; align-items: stretch; height: 62px; }
+  .barcode { display: flex; align-items: stretch; height: 48px; }
   .barcode span { background: var(--ink); margin-inline-end: 3px; }
-  .unit-id { font-size: 40px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: 1px; }
-  .unit-lbl { font-size: 12.5px; color: var(--muted); }
+  .unit-id { font-size: 32px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: 1px; }
+  .unit-lbl { font-size: 12px; color: var(--muted); }
+  .unit-fam { font-size: 12px; color: var(--ink-2); font-weight: 700; }
 
   .big-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .big-btns.single { grid-template-columns: 1fr; }
   .big-btn {
     border: none; border-radius: 18px; cursor: pointer; font: inherit; color: #fff;
-    min-height: 200px; font-size: 92px; line-height: 1;
-    display: flex; align-items: center; justify-content: center;
+    min-height: 190px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 6px;
   }
+  .big-btn .g { font-size: 84px; line-height: 1; }
+  .big-btn .t { font-size: 17px; font-weight: 700; opacity: .95; }
   .big-btn:active { transform: scale(.97); }
+  .big-btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
   .big-btn.ok  { background: var(--good); }
   .big-btn.bad { background: var(--critical); }
 
-  /* בחירת תקלה */
   .overlay {
-    position: fixed; inset: 0; z-index: 40; background: color-mix(in srgb, var(--page) 88%, black);
-    display: flex; align-items: center; justify-content: center; padding: 20px;
+    position: fixed; inset: 0; z-index: 40;
+    background: color-mix(in srgb, var(--page) 90%, black);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 16px; padding: 20px; overflow-y: auto;
   }
-  .defects { display: grid; grid-template-columns: repeat(2, minmax(150px, 230px)); gap: 16px; }
+  .overlay .oh { font-size: 20px; font-weight: 800; text-align: center; }
+  .defects { display: grid; grid-template-columns: repeat(3, minmax(112px, 180px)); gap: 14px; }
   .defect {
     border: 2px solid var(--border); background: var(--surface);
     border-radius: 18px; cursor: pointer; font: inherit; color: var(--ink);
-    padding: 26px 10px 16px; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    padding: 18px 8px 13px; display: flex; flex-direction: column; align-items: center; gap: 6px;
   }
-  .defect .ico { font-size: 74px; line-height: 1.1; }
-  .defect .cap { font-size: 12px; color: var(--muted); }
+  .defect .ico { font-size: 54px; line-height: 1.1; }
+  .defect .cap { font-size: 11.5px; color: var(--muted); text-align: center; line-height: 1.35; }
+  .defect .cap b { color: var(--ink); display: block; font-size: 12.5px; }
   .defect:active { transform: scale(.96); }
-  .defect.cancel { grid-column: 1 / -1; min-height: 64px; padding: 10px; flex-direction: row; font-size: 34px; }
+  .defect:focus-visible { outline: 3px solid var(--series); outline-offset: 2px; }
+  .defect.cancel { grid-column: 1 / -1; min-height: 56px; padding: 10px; flex-direction: row; font-size: 28px; }
 
-  /* הבזק אישור */
   .flash {
-    position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center;
-    font-size: 150px; color: #fff; pointer-events: none;
+    position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 10px;
+    color: #fff; pointer-events: none; text-align: center; padding: 20px;
   }
+  .flash .g { font-size: 120px; line-height: 1; }
+  .flash .t { font-size: 21px; font-weight: 700; }
   .flash.ok  { background: color-mix(in srgb, var(--good) 92%, black); }
   .flash.bad { background: color-mix(in srgb, var(--critical) 92%, black); }
 
   /* ══════════ דשבורד ══════════ */
-  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
-  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; }
-  .kpi .lbl { font-size: 12.5px; color: var(--muted); margin-bottom: 6px; }
-  .kpi .val { font-size: 30px; font-weight: 800; line-height: 1.1; }
+  .dash-bar {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    margin-bottom: 14px; font-size: 13px; color: var(--muted);
+  }
+  .dash-bar b { color: var(--ink); font-weight: 700; }
+
+  .prob-card { border-color: var(--critical); margin-bottom: 14px; }
+  .prob-wrap { overflow-x: auto; }
+  .prob-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .prob-table th {
+    text-align: start; font-size: 11.5px; color: var(--muted); font-weight: 600;
+    padding: 6px 8px; border-bottom: 1px solid var(--baseline); white-space: nowrap;
+  }
+  .prob-table td { padding: 10px 8px; border-bottom: 1px solid var(--grid); vertical-align: middle; }
+  .prob-table tr:last-child td { border-bottom: none; }
+  .prob-table tr.closed { opacity: .62; }
+  .prob-table .em { font-size: 20px; margin-inline-end: 7px; vertical-align: -3px; }
+  .prob-table .what { font-weight: 700; }
+  .prob-table .where { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .num { font-variant-numeric: tabular-nums; font-weight: 700; }
+  .age { font-variant-numeric: tabular-nums; font-weight: 800; white-space: nowrap; }
+  .age.critical { color: var(--crit-text); }
+  .age.serious  { color: var(--serious); }
+  .age.warning  { color: var(--ink-2); }
+  .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11.5px; font-weight: 700; border-radius: 99px;
+    padding: 3px 9px; border: 1px solid var(--baseline); white-space: nowrap;
+  }
+  .pill.none   { color: #fff; background: var(--critical); border-color: var(--critical); }
+  .pill.closed { color: var(--good-text); border-color: var(--good); }
+  .state { font-size: 12px; color: var(--ink-2); white-space: nowrap; }
+  .dotline { display: inline-flex; gap: 3px; margin-inline-end: 6px; vertical-align: 1px; }
+  .dotline .d { width: 7px; height: 7px; border-radius: 2px; background: var(--grid); }
+  .dotline .d.on { background: var(--series); }
+  .changed { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .changed b { color: var(--ink-2); }
+
+  .kpis { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 14px; }
+  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 13px 14px; }
+  .kpi .lbl { font-size: 12px; color: var(--muted); margin-bottom: 5px; line-height: 1.35; min-height: 32px; }
+  .kpi .val { font-size: 28px; font-weight: 800; line-height: 1.1; }
   .kpi .val.good { color: var(--good-text); }
-  .kpi .sub { font-size: 12px; color: var(--ink-2); margin-top: 4px; }
+  .kpi .val.crit { color: var(--crit-text); }
+  .kpi .sub { font-size: 11.5px; color: var(--ink-2); margin-top: 3px; }
 
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
 
-  /* גרף עמודות אופקי (HTML) */
-  .hbar { display: grid; grid-template-columns: 118px 1fr 34px; align-items: center; gap: 10px; padding: 7px 0; }
+  .viz { direction: ltr; }
+  .viz svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .gridline { stroke: var(--grid); stroke-width: 1; }
+  .axisline { stroke: var(--baseline); stroke-width: 1; }
+  .axistext { fill: var(--muted); font-size: 10.5px; font-family: system-ui, sans-serif; }
+  .vlabel   { fill: var(--ink-2); font-size: 11px; font-weight: 700; font-family: system-ui, sans-serif; }
+
+  .hbar { display: grid; grid-template-columns: 158px 1fr 52px; align-items: center; gap: 10px; padding: 6px 0; }
   .hbar .lbl { font-size: 13px; color: var(--ink-2); }
   .hbar .lbl .em { margin-inline-end: 6px; }
-  .hbar .track { display: block; background: var(--track); border-radius: 4px; height: 22px; position: relative; overflow: hidden; }
-  .hbar .fill {
-    display: block; background: var(--series); height: 100%;
-    border-start-end-radius: 4px; border-end-end-radius: 4px;
-  }
+  .hbar .track { display: block; background: var(--sunk); border-radius: 4px; height: 22px; overflow: hidden; }
+  .hbar .fill { display: block; background: var(--series); height: 100%; border-start-end-radius: 4px; border-end-end-radius: 4px; }
   .hbar.max .fill { background: var(--series-deep); }
-  .hbar .val { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .hbar .val { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; text-align: start; }
   .hbar.max .lbl, .hbar.max .val { font-weight: 800; color: var(--ink); }
   .badge {
     display: inline-block; font-size: 10.5px; font-weight: 700; color: var(--ink);
     border: 1px solid var(--baseline); border-radius: 99px; padding: 1px 8px; margin-inline-start: 6px;
   }
 
-  /* פירוט לפי תחנה — small multiples */
-  .st-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-  .st-card { border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
-  .st-card.max { border-color: var(--series-deep); box-shadow: 0 0 0 2px color-mix(in srgb, var(--series-deep) 25%, transparent); }
-  .st-card .head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-  .st-card .head .ico { font-size: 26px; }
-  .st-card .head .nm { font-size: 13.5px; font-weight: 700; line-height: 1.2; }
-  .st-card .stats { font-size: 12px; color: var(--ink-2); margin-bottom: 10px; }
-  .st-card .stats b.bad { color: var(--critical); }
-  .st-card .mini { display: grid; grid-template-columns: 24px 1fr 20px; align-items: center; gap: 7px; padding: 4px 0; }
-  .st-card .mini .em { font-size: 17px; text-align: center; }
-  .st-card .mini .track { display: block; background: var(--track); border-radius: 4px; height: 14px; overflow: hidden; }
-  .st-card .mini .fill { display: block; background: var(--series); height: 100%; border-start-end-radius: 4px; border-end-end-radius: 4px; }
-  .st-card .mini .val { font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
-  .st-card .mini.zero .val { color: var(--muted); font-weight: 400; }
-
-  /* ציר זמן — עמודות אנכיות */
-  .timeline { direction: ltr; display: flex; align-items: flex-end; gap: 6px; height: 150px; border-bottom: 1px solid var(--baseline); padding: 0 4px; }
-  .taxis { direction: ltr; }
-  .tcol { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; }
-  .tcol .bar {
-    width: 100%; max-width: 44px; background: var(--series);
-    border-start-start-radius: 4px; border-start-end-radius: 4px;
+  .heat { overflow-x: auto; }
+  .heat table { border-collapse: separate; border-spacing: 2px; font-size: 12px; }
+  .heat th { font-size: 11px; color: var(--muted); font-weight: 600; padding: 3px 5px; white-space: nowrap; }
+  .heat th.row { text-align: start; }
+  .heat td { text-align: center; }
+  .cell {
+    display: block; min-width: 42px; padding: 9px 4px; border-radius: 6px;
+    font-variant-numeric: tabular-nums; font-weight: 700;
   }
-  .tcol .n { font-size: 11.5px; color: var(--ink-2); font-weight: 700; margin-bottom: 3px; font-variant-numeric: tabular-nums; }
-  .taxis { display: flex; gap: 6px; padding: 5px 4px 0; }
-  .taxis span { flex: 1; text-align: center; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
 
-  /* טבלה */
-  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
-  th { text-align: start; font-size: 12px; color: var(--muted); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--baseline); }
-  td { padding: 8px; border-bottom: 1px solid var(--grid); }
-  td.time { font-variant-numeric: tabular-nums; color: var(--ink-2); }
-  td .em { font-size: 20px; margin-inline-end: 8px; vertical-align: -3px; }
-  tr.live td { background: color-mix(in srgb, var(--series) 8%, transparent); }
+  .dist { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .dbox { background: var(--sunk); border-radius: 10px; padding: 13px 8px; text-align: center; }
+  .dbox .v { font-size: 25px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .dbox .l { font-size: 11.5px; color: var(--muted); margin-top: 3px; line-height: 1.35; }
+  .dbox.hero { background: color-mix(in srgb, var(--series) 15%, transparent); }
+  .dbox.hero .v { color: var(--series-deep); }
+  .dbox.esc { background: color-mix(in srgb, var(--critical) 12%, transparent); }
+  .dbox.esc .v { color: var(--crit-text); }
 
-  /* Tooltip */
+  table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  table.t th { text-align: start; font-size: 11.5px; color: var(--muted); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--baseline); }
+  table.t td { padding: 8px; border-bottom: 1px solid var(--grid); }
+  table.t td.mono { font-variant-numeric: tabular-nums; color: var(--ink-2); }
+  table.t td .em { font-size: 19px; margin-inline-end: 8px; vertical-align: -3px; }
+  table.t tr.live td { background: color-mix(in srgb, var(--series) 9%, transparent); }
+
   #tip {
     position: fixed; z-index: 60; pointer-events: none; display: none;
     background: var(--ink); color: var(--page);
-    font-size: 12.5px; padding: 7px 11px; border-radius: 8px; max-width: 260px;
+    font-size: 12.5px; padding: 7px 11px; border-radius: 8px; max-width: 280px;
+    line-height: 1.45;
   }
 
-  footer { text-align: center; font-size: 12px; color: var(--muted); padding: 10px 0 26px; }
+  footer { text-align: center; font-size: 12px; color: var(--muted); padding: 12px 0 30px; }
 
+  @media (max-width: 980px) { .kpis { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 760px) {
-    .stations, .kpis, .st-grid { grid-template-columns: repeat(2, 1fr); }
     .grid2 { grid-template-columns: 1fr; }
-    .big-btn { min-height: 150px; font-size: 70px; }
-    .unit-id { font-size: 30px; }
+    .kpis  { grid-template-columns: repeat(2, 1fr); }
+    .stations { grid-template-columns: repeat(3, 1fr); }
+    .defects { grid-template-columns: repeat(2, 1fr); }
+    .big-btn { min-height: 150px; }
+    .big-btn .g { font-size: 62px; }
+    .dist { grid-template-columns: repeat(2, 1fr); }
+    .hbar { grid-template-columns: 110px 1fr 46px; }
   }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
 <body>
 
 <header>
   <div>
-    <h1>מערכת בקרת איכות — קו ייצור אלומיניום</h1>
-    <div class="sub">אב-טיפוס להדגמה · הנתונים מדומים</div>
+    <h1>בקרת איכות — קוסטיקה</h1>
+    <div class="sub">אב-טיפוס להדגמה · חודש עבודה מלא</div>
   </div>
+  <span class="demo-badge">● נתונים מדומים</span>
   <nav class="tabs">
     <button class="tab active" id="tabWorker">👷 עמדת עובד</button>
     <button class="tab" id="tabDash">📊 דשבורד מנהלים</button>
@@ -231,306 +305,611 @@
 <!-- ══════════ מסך עובד ══════════ -->
 <main id="workerView">
   <div class="worker-note">
-    💡 <b>מה שהעובד רואה:</b> אפס טקסט — רק מספר תחנה, אייקונים וצבעים. הכיתוב הקטן כאן הוא לצורך ההדגמה בלבד.
+    💡 <b>מה שהעובד רואה:</b> אפס טקסט — רק אייקונים וצבעים. הכיתוב כאן הוא להדגמה בלבד.
+    <b>הכלל:</b> אף אחד לא בודק את עצמו — כל עמדה בודקת את מה שקיבלה מהעמדה שלפניה.
   </div>
+
   <div class="stations" id="stationPicker"></div>
+
+  <div class="stage">
+    <div class="steps"><div class="pip" id="pip1"></div><div class="pip" id="pip2"></div></div>
+    <div class="ask" id="ask"></div>
+    <div class="ask-sub" id="askSub"></div>
+    <div class="from" id="fromChip"></div>
+  </div>
+
   <div class="unit-card">
     <div>
-      <div class="unit-lbl">יחידה נסרקה (בדמו — מדומה)</div>
+      <div class="unit-lbl">היחידה שלפניך</div>
       <div class="unit-id" id="unitId"></div>
+      <div class="unit-fam" id="unitFam"></div>
     </div>
     <div class="barcode" id="barcode" aria-hidden="true"></div>
   </div>
-  <div class="big-btns">
-    <button class="big-btn ok" id="btnOk" aria-label="תקין">✓</button>
-    <button class="big-btn bad" id="btnBad" aria-label="תקלה">✗</button>
-  </div>
+
+  <div class="big-btns" id="btns"></div>
 </main>
 
 <!-- ══════════ דשבורד ══════════ -->
 <main id="dashView" hidden>
+
+  <div class="dash-bar">
+    <span>תקופה: <b id="period"></b></span><span>·</span>
+    <span><b id="unitCount"></b> יחידות עברו בקו</span><span>·</span>
+    <span>5 עמדות · 3 משפחות מוצר</span>
+  </div>
+
+  <section class="card prob-card">
+    <h2>בעיות פתוחות — לפי גיל</h2>
+    <div class="hint">
+      פגם שנתפס וחוזר שוב הוא לא איכות — הוא ניפוי. <b>הבעיה נפתחת אוטומטית</b> כשאותו פגם חוזר באותה עמדה,
+      ונסגרת <b>רק כשהנתונים מוכיחים שהיא נעלמה</b>. חזרה? נפתחת מחדש — והגיל לא מתאפס.
+    </div>
+    <div class="prob-wrap">
+      <table class="prob-table">
+        <thead><tr><th>הבעיה</th><th>מקרים</th><th>פתוח</th><th>אחראי</th><th>שלב</th><th>מה שונה</th></tr></thead>
+        <tbody id="probRows"></tbody>
+      </table>
+    </div>
+  </section>
+
   <div class="kpis" id="kpis"></div>
+
   <div class="grid2">
     <section class="card">
-      <h2>תקלות לפי תחנה</h2>
-      <div class="hint">איפה צוואר הבקבוק? רחפו על עמודה לפירוט</div>
-      <div id="byStation"></div>
+      <h2>מה נשבר — לפי סוג</h2>
+      <div class="hint">עמודות = מקרים · קו = אחוז מצטבר. שני סוגים מסבירים את רוב הפגמים.</div>
+      <div class="viz" id="pareto"></div>
     </section>
     <section class="card">
-      <h2>תקלות לפי סוג</h2>
-      <div class="hint">מה הבעיה הנפוצה ביותר היום</div>
-      <div id="byType"></div>
+      <h2>פגמים לאורך החודש</h2>
+      <div class="hint">כל עמודה = יום עבודה. הקפיצה באדום = משלוח חומר פגום מספק.</div>
+      <div class="viz" id="trend"></div>
     </section>
   </div>
+
   <section class="card" style="margin-bottom:12px">
-    <h2>פירוט לפי תחנה</h2>
-    <div class="hint">מה בדיוק קורה בכל תחנה — כל הכרטיסים באותו קנה מידה, להשוואה ישירה</div>
-    <div class="st-grid" id="stationDetail"></div>
+    <h2>האם תופסים בהזדמנות הראשונה?</h2>
+    <div class="hint">
+      זה המבחן של השיטה. כל פגם עובר בעמדות שיכולות לראות אותו — <b>העמדה הראשונה מביניהן אמורה לתפוס אותו</b>,
+      לפני שמישהו הספיק לבנות עליו. כל "פספוס" הוא עמדה שהחזיקה את החלק ביד ולא הסתכלה.
+    </div>
+    <div class="dist" id="dist"></div>
   </section>
-  <section class="card" style="margin-bottom:12px">
-    <h2>תקלות לאורך היום</h2>
-    <div class="hint">מספר תקלות בכל שעה — רחפו לפירוט</div>
-    <div class="timeline" id="timeline"></div>
-    <div class="taxis" id="taxis"></div>
-  </section>
+
+  <div class="grid2">
+    <section class="card">
+      <h2>איפה נתפס כל סוג פגם</h2>
+      <div class="hint">שורה = העמדה שתפסה · עמודה = סוג הפגם. כהה יותר = יותר מקרים.</div>
+      <div class="heat" id="heat"></div>
+    </section>
+    <section class="card">
+      <h2>צוואר בקבוק — דקות ליחידה</h2>
+      <div class="hint">מחושב לבד משתי הלחיצות. אף אחד לא מדד כלום ביד, אף אחד לא מילא טופס.</div>
+      <div id="cycle"></div>
+    </section>
+  </div>
+
+  <div class="grid2">
+    <section class="card">
+      <h2>ספקים — אחוז אצוות שנדחו</h2>
+      <div class="hint">קבלת החומר בונה תיק. אחרי חודש יש מספר לדבר עליו מול הספק.</div>
+      <div id="suppliers"></div>
+    </section>
+    <section class="card">
+      <h2>ביקורת מדגמית — מה שהעין לא רואה</h2>
+      <div class="hint">יחידה אחת מכל 50, בדיקה עמוקה. תופסת פגמים ש<b>אף עמדה לא יכולה לראות</b> — והלקוח כן, בעוד שנתיים.</div>
+      <div id="audit"></div>
+    </section>
+  </div>
+
   <section class="card">
-    <h2>סריקות אדומות אחרונות</h2>
-    <div class="hint">שורות מודגשות = נקלטו עכשיו בהדגמה החיה</div>
-    <table>
-      <thead><tr><th>שעה</th><th>תחנה</th><th>יחידה</th><th>תקלה</th></tr></thead>
-      <tbody id="recentRows"></tbody>
+    <h2>פגמים אחרונים</h2>
+    <div class="hint">שורות מודגשות = נקלטו עכשיו בהדגמה החיה (לחצו ✗ במסך העובד)</div>
+    <table class="t">
+      <thead><tr><th>מתי</th><th>נתפס בעמדה</th><th>יחידה</th><th>הפגם</th><th>המקור</th></tr></thead>
+      <tbody id="feedRows"></tbody>
     </table>
   </section>
+
 </main>
 
-<div id="tip"></div>
-<footer>אב-טיפוס · כל הנתונים מדומים לצורך הדגמה בלבד</footer>
+<div id="tip" role="status"></div>
+<footer>אב-טיפוס · כל הנתונים מדומים לצורך הדגמה בלבד · קוסטיקה 2026</footer>
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   הגדרות — לעריכה: שמות תחנות, אייקונים וסוגי תקלות
+   1. הגדרות — עמדות, פגמים, מי בודק את מי
    ═══════════════════════════════════════════════════════════ */
 const STATIONS = [
-  { id: 'cut',   num: 1, icon: '🪚', name: 'חיתוך פרופילים',  cap: 'מסור כפול/חד-ראש' },
-  { id: 'mono',  num: 2, icon: '🔩', name: 'הרכבת מונובלוק', cap: 'הרכבת מונובלוק' },
-  { id: 'sash',  num: 3, icon: '🖼️', name: 'הרכבת כנף',      cap: 'הרכבת כנף' },
-  { id: 'glaze', num: 4, icon: '🪟', name: 'זיגוג',           cap: 'זיגוג' },
+  { id:'recv',  num:0, icon:'📥', name:'קבלת חומר',       cap:'בודקת את הספק' },
+  { id:'cut',   num:1, icon:'🪚', name:'חיתוך',            cap:'בודק את קבלת החומר' },
+  { id:'proc',  num:2, icon:'🛠️', name:'עיבוד',            cap:'בודק את החיתוך' },
+  { id:'mono',  num:3, icon:'🔧', name:'מונובלוק ומנועים', cap:'בודק את העיבוד' },
+  { id:'glaze', num:5, icon:'🖼️', name:'זיגוג',            cap:'בודק את מה שהגיע' },
 ];
+const SUPPLIER = { id:'sup', icon:'🚛', name:'הספק' };
+
 const DEFECTS = [
-  { id: 'measure', icon: '📐', name: 'מידה / חיתוך פגום' },
-  { id: 'drain',   icon: '💧', name: 'ניקוז / קדח חסר' },
-  { id: 'seal',    icon: '🧴', name: 'איטום / סיליקון / קוביה' },
-  { id: 'hw',      icon: '⚙️', name: 'אביזרים / גלגלים / נעילה' },
+  { id:'bent',  icon:'〰️', name:'עקום',          long:'פרופיל / חומר' },
+  { id:'dmg',   icon:'💥', name:'נזק פיזי',      long:'מכה · שריטה · שבר' },
+  { id:'paint', icon:'🎨', name:'צבע פגום',      long:'צבע לא טוב' },
+  { id:'matl',  icon:'📦', name:'חומר / פרזול',  long:'חסר או לא נכון' },
+  { id:'hole',  icon:'🕳️', name:'חור חסר',       long:'חורי מעבר · קדחים' },
+  { id:'meas',  icon:'📐', name:'מידה שגויה',    long:'לא תואם פק"ע' },
+  { id:'motor', icon:'⚙️', name:'מנוע',          long:'לא נכון / צד הפוך' },
+  { id:'glass', icon:'🪟', name:'זכוכית / גומי', long:'טעות · שבר · ישיבה' },
 ];
 
-/* ── נתוני יום דמו (דטרמיניסטיים — אותו יום בכל פתיחה) ── */
-function mulberry32(a) {
-  return function () {
-    a |= 0; a = a + 0x6D2B79F5 | 0;
-    let t = Math.imul(a ^ a >>> 15, 1 | a);
-    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  };
-}
-const rnd = mulberry32(20260712);
-
-// הסתברות תקלה לכל תחנה — "הרכבת מונובלוק" היא צוואר הבקבוק המכוון
-const DEFECT_RATE = { cut: .05, mono: .17, sash: .07, glaze: .04 };
-// התפלגות סוגי תקלה לכל תחנה
-const TYPE_W = {
-  cut:   { measure: .80, drain: .10, seal: .05, hw: .05 },
-  mono:  { measure: .10, drain: .30, seal: .35, hw: .25 },
-  sash:  { measure: .15, drain: .10, seal: .25, hw: .50 },
-  glaze: { measure: .10, drain: .10, seal: .70, hw: .10 },
+// מה כל עמדה יכולה לדווח על מה שקיבלה
+const MENU = {
+  recv:  ['bent','paint','dmg','matl'],
+  cut:   ['bent','paint','dmg','matl'],
+  proc:  ['meas','bent','dmg','hole'],
+  mono:  ['motor','dmg','matl','hole','bent'],
+  glaze: ['glass','dmg','motor','matl','hole'],
 };
-function pickType(st) {
-  let r = rnd(), acc = 0;
-  for (const d of DEFECTS) { acc += TYPE_W[st][d.id]; if (r < acc) return d.id; }
-  return DEFECTS[0].id;
-}
 
-const scans = [];
-let unitSeq = 1000;
-for (let h = 6; h <= 16; h++) {
-  for (const st of STATIONS) {
-    const n = 5 + Math.floor(rnd() * 4);            // 5–8 יחידות לשעה בתחנה
-    for (let i = 0; i < n; i++) {
-      const lunchSpike = (h === 13 || h === 14) ? 1.8 : 1;  // זינוק אחרי הפסקת צהריים
-      const bad = rnd() < DEFECT_RATE[st.id] * lunchSpike;
-      scans.push({
-        h, m: Math.floor(rnd() * 60),
-        station: st.id,
-        unit: 'A-' + (unitSeq++),
-        ok: !bad,
-        type: bad ? pickType(st.id) : null,
-        live: false,
-      });
-    }
+const FAMILIES = [
+  { id:'A', name:'הרם והזז',        series:'2200',                route:['recv','cut','proc','glaze'],        w:15 },
+  { id:'B', name:'ציר / דריי-קיפ',  series:'4400·4500·4750·5500', route:['recv','cut','proc','glaze'],        w:40 },
+  { id:'C', name:'הזזה + מונובלוק', series:'7000·7500·9000·9200', route:['recv','cut','proc','mono','glaze'], w:45 },
+];
+
+// איפה כל פגם נולד, ומה הסיכוי שעמדה שיכולה לראות אותו — באמת תראה אותו
+const ORIGIN = {
+  bent:  { born:'sup',  rate:.024, see:.80 },
+  paint: { born:'sup',  rate:.013, see:.72 },
+  matl:  { born:'sup',  rate:.015, see:.85 },
+  glass: { born:'sup',  rate:.011, see:.75 },   // זכוכית/גומי שהגיעו לא נכונים — רק הזיגוג רואה
+  dmg:   { born:'cut',  rate:.014, see:.70 },
+  meas:  { born:'cut',  rate:.007, see:.82 },
+  hole:  { born:'proc', rate:.026, see:.45 },   // ← הבעיה שאף אחד לא סוגר. קשה לראות → הרבה בורח לשטח
+  motor: { born:'mono', rate:.012, see:.72 },
+};
+
+const CYCLE = { recv:4.5, cut:7.0, proc:9.5, mono:16.5, glaze:8.0 };  // מונובלוק = צוואר הבקבוק
+const SUPPLIERS = [
+  { name:'ספק א׳ — פרופילים', share:.46, rej:.058 },
+  { name:'ספק ב׳ — פרופילים', share:.28, rej:.121 },
+  { name:'ספק ג׳ — פרזול',    share:.16, rej:.034 },
+  { name:'ספק ד׳ — מנועים',   share:.10, rej:.089 },
+];
+
+/* ═══════════════════════════════════════════════════════════
+   2. חודש נתונים מדומים — דטרמיניסטי
+   ═══════════════════════════════════════════════════════════ */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const rnd = mulberry32(20260714);
+
+const HE_MONTH = ['בינואר','בפברואר','במרץ','באפריל','במאי','ביוני','ביולי','באוגוסט','בספטמבר','באוקטובר','בנובמבר','בדצמבר'];
+const fmtDay = d => `${d.getDate()} ${HE_MONTH[d.getMonth()]}`;
+
+// 22 ימי עבודה (א׳–ה׳) שמסתיימים ב-14.7.2026
+const DAYS = [];
+{
+  const d = new Date(2026, 6, 14);
+  while (DAYS.length < 22) {
+    const w = d.getDay();                      // 5=שישי, 6=שבת
+    if (w !== 5 && w !== 6) DAYS.unshift(new Date(d));
+    d.setDate(d.getDate() - 1);
   }
 }
-scans.sort((a, b) => a.h - b.h || a.m - b.m);
+const SPIKE_DAY = 13;                          // יום המשלוח הפגום
 
-/* ═══════════ מסך עובד ═══════════ */
-let currentStation = STATIONS[0].id;
-let liveUnit = unitSeq;
-
-const $ = (id) => document.getElementById(id);
-
-function drawStations() {
-  $('stationPicker').innerHTML = STATIONS.map(s => `
-    <button class="station ${s.id === currentStation ? 'active' : ''}" data-st="${s.id}">
-      <span class="num">${s.num}</span>
-      <span class="ico">${s.icon}</span>
-      <span class="cap">${s.name}</span>
-    </button>`).join('');
-  $('stationPicker').querySelectorAll('.station').forEach(b =>
-    b.onclick = () => { currentStation = b.dataset.st; drawStations(); });
-}
-
-function newUnit() {
-  $('unitId').textContent = 'A-' + liveUnit;
-  // ברקוד דקורטיבי — רוחבי פסים אקראיים
-  let bars = '';
-  for (let i = 0; i < 24; i++) bars += `<span style="width:${1 + Math.floor(Math.random() * 4)}px"></span>`;
-  $('barcode').innerHTML = bars;
-}
-
-function flash(kind, icon) {
-  const el = document.createElement('div');
-  el.className = 'flash ' + kind;
-  el.textContent = icon;
-  document.body.appendChild(el);
-  setTimeout(() => el.remove(), 650);
-}
-
-function record(ok, type) {
-  const now = new Date();
-  scans.push({
-    h: now.getHours(), m: now.getMinutes(),
-    station: currentStation, unit: 'A-' + liveUnit,
-    ok, type: type || null, live: true,
-  });
-  liveUnit++;
-  newUnit();
-}
-
-$('btnOk').onclick = () => { record(true); flash('ok', '✓'); };
-$('btnBad').onclick = () => {
-  const ov = document.createElement('div');
-  ov.className = 'overlay';
-  ov.innerHTML = `<div class="defects">
-    ${DEFECTS.map(d => `<button class="defect" data-d="${d.id}"><span class="ico">${d.icon}</span><span class="cap">${d.name}</span></button>`).join('')}
-    <button class="defect cancel" data-d="">↩</button>
-  </div>`;
-  document.body.appendChild(ov);
-  ov.querySelectorAll('.defect').forEach(b => b.onclick = () => {
-    ov.remove();
-    if (b.dataset.d) { record(false, b.dataset.d); flash('bad', DEFECTS.find(d => d.id === b.dataset.d).icon); }
-  });
+const pickFamily = () => {
+  const r = rnd() * 100; let acc = 0;
+  for (const f of FAMILIES) { acc += f.w; if (r < acc) return f; }
+  return FAMILIES[2];
 };
 
-/* ═══════════ דשבורד ═══════════ */
-const tip = $('tip');
-function bindTip(el, html) {
-  el.onmousemove = (e) => {
-    tip.innerHTML = html; tip.style.display = 'block';
-    const x = Math.min(e.clientX + 14, innerWidth - tip.offsetWidth - 8);
-    tip.style.left = x + 'px'; tip.style.top = (e.clientY + 16) + 'px';
-  };
-  el.onmouseleave = () => tip.style.display = 'none';
+const units = [], defects = [], cycles = {};
+STATIONS.forEach(s => cycles[s.id] = []);
+let seq = 4100;
+
+DAYS.forEach((date, di) => {
+  for (let i = 0; i < 150; i++) {
+    const fam = pickFamily();
+    const uid = String(++seq);
+    const hour = 6 + Math.floor(rnd() * 10);
+    const min  = Math.floor(rnd() * 60);
+    units.push({ uid, di, fam: fam.id });
+
+    fam.route.forEach(st => cycles[st].push(CYCLE[st] * (0.75 + rnd() * 0.55)));
+
+    for (const d of DEFECTS) {
+      const o = ORIGIN[d.id];
+      let rate = o.rate;
+      if (di === SPIKE_DAY && o.born === 'sup') rate *= 5.0;   // המשלוח הפגום
+      if (rnd() >= rate) continue;
+
+      const bornIdx = o.born === 'sup' ? -1 : fam.route.indexOf(o.born);
+      if (o.born !== 'sup' && bornIdx === -1) continue;           // לא רלוונטי למשפחה הזאת
+      const catchers = fam.route.slice(bornIdx + 1).filter(st => MENU[st].includes(d.id));
+      if (!catchers.length) continue;
+
+      let caughtAt = null, dist = null;
+      for (let k = 0; k < catchers.length; k++) {
+        if (rnd() < o.see) { caughtAt = catchers[k]; dist = k; break; }
+      }
+      defects.push({ uid, di, hour, min, type: d.id, origin: o.born, caughtAt, dist });
+    }
+  }
+});
+
+const caught  = defects.filter(d => d.caughtAt);
+const escaped = defects.filter(d => !d.caughtAt);
+const stOf   = id => STATIONS.find(s => s.id === id);
+const stName = id => stOf(id).name;
+const stIcon = id => stOf(id).icon;
+const dfOf   = id => DEFECTS.find(d => d.id === id);
+const srcName = id => id === 'sup' ? SUPPLIER.name : stName(id);
+
+/* ── שכבה 3: לולאת התיקון ── */
+const PROBLEMS = [
+  { type:'hole',  st:'mono',  age:214, owner:null,        state:0, changed:null },
+  { type:'bent',  st:'recv',  age:63,  owner:'רכש',        state:1, changed:null },
+  { type:'paint', st:'recv',  age:41,  owner:'רכש',        state:2, changed:'מפרט לספק' },
+  { type:'motor', st:'glaze', age:28,  owner:'הנדסה',      state:2, changed:'שרטוט' },
+  { type:'dmg',   st:'proc',  age:12,  owner:'מנהל משמרת', state:3, changed:'מתלה שינוע' },
+  { type:'meas',  st:'proc',  age:0,   owner:'הנדסה',      state:4, changed:'תוכנית CNC' },
+  { type:'glass', st:'glaze', age:0,   owner:'זיגוג',      state:4, changed:'כלי הרכבה' },
+];
+const STATE_NAMES = ['נפתח','סיבה שורש','פעולה','אימות','נסגר'];
+const ageClass = a => a >= 90 ? 'critical' : a >= 30 ? 'serious' : 'warning';
+const hits = p => caught.filter(d => d.type === p.type && d.caughtAt === p.st).length;
+const openProblems   = PROBLEMS.filter(p => p.state < 4);
+const closedProblems = PROBLEMS.filter(p => p.state === 4);
+
+/* ═══════════════════════════════════════════════════════════
+   3. מסך העובד — שתי לחיצות
+   ═══════════════════════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+let stationId = 'recv', step = 'accept', cur = null;
+const live = [];
+
+const upstreamOf = id => {
+  const i = STATIONS.findIndex(s => s.id === id);
+  return i === 0 ? SUPPLIER : STATIONS[i - 1];
+};
+const nextUnit = () => {
+  cur = { uid: String(++seq), fam: FAMILIES[Math.floor(rnd() * 3)] };
+  step = 'accept';
+};
+nextUnit();
+
+function drawBarcode(){
+  const el = $('barcode'); el.innerHTML = '';
+  for (let i = 0; i < 26; i++) {
+    const s = document.createElement('span');
+    s.style.width = (1 + Math.floor(rnd() * 3)) + 'px';
+    s.style.opacity = rnd() > .5 ? 1 : .35;
+    el.appendChild(s);
+  }
 }
 
-function renderDashboard() {
-  const total = scans.length;
-  const bad = scans.filter(s => !s.ok);
-  const passRate = ((total - bad.length) / total * 100).toFixed(1);
+function renderStations(){
+  $('stationPicker').innerHTML = STATIONS.map(s => `
+    <button class="station ${s.id === stationId ? 'active' : ''}" data-st="${s.id}">
+      <span class="num">עמדה ${s.num}</span>
+      <span class="ico">${s.icon}</span>
+      <span class="nm">${s.name}</span>
+      <span class="cap">${s.cap}</span>
+    </button>`).join('');
+  $('stationPicker').querySelectorAll('.station').forEach(b =>
+    b.onclick = () => { stationId = b.dataset.st; nextUnit(); renderStations(); renderStage(); });
+}
 
-  const byStation = STATIONS.map(st => ({
-    st, n: bad.filter(s => s.station === st.id).length,
-    scanned: scans.filter(s => s.station === st.id).length,
-  }));
-  const worst = byStation.reduce((a, b) => b.n > a.n ? b : a);
+function renderStage(){
+  const up = upstreamOf(stationId);
+  $('pip1').className = 'pip on';
+  $('pip2').className = 'pip' + (step === 'work' ? ' on' : '');
+  $('unitId').textContent = cur.uid;
+  $('unitFam').textContent = `${cur.fam.name} · ${cur.fam.series}`;
+  drawBarcode();
 
-  $('kpis').innerHTML = `
-    <div class="kpi"><div class="lbl">יחידות נסרקו היום</div><div class="val">${total}</div><div class="sub">בכל 4 התחנות</div></div>
-    <div class="kpi"><div class="lbl">אחוז תקינות</div><div class="val good">${passRate}%</div><div class="sub">✓ ירוק מכלל הסריקות</div></div>
-    <div class="kpi"><div class="lbl">סה״כ תקלות</div><div class="val">${bad.length}</div><div class="sub">✗ אדום היום</div></div>
-    <div class="kpi"><div class="lbl">התחנה הבעייתית ביותר</div><div class="val">${worst.st.icon}</div><div class="sub"><b>${worst.st.name}</b> · ${worst.n} תקלות</div></div>`;
+  if (step === 'accept') {
+    $('ask').textContent = 'מה שקיבלת — תקין?';
+    $('askSub').textContent = 'זו הבדיקה על העמדה שלפניך. אל תתחיל לעבוד לפני שהסתכלת.';
+    $('fromChip').innerHTML = `<span class="lbl">הגיע מ־</span><span class="ico">${up.icon}</span><span>${up.name}</span>`;
+    $('fromChip').style.display = '';
+    $('btns').className = 'big-btns';
+    $('btns').innerHTML = `
+      <button class="big-btn ok"  id="bOk"><span class="g">✓</span><span class="t">תקין — מתחיל לעבוד</span></button>
+      <button class="big-btn bad" id="bNo"><span class="g">✗</span><span class="t">לא תקין — מחזיר</span></button>`;
+    $('bOk').onclick = () => { step = 'work'; renderStage(); };
+    $('bNo').onclick = openDefects;
+  } else {
+    $('ask').textContent = 'סיימת את החלק שלך?';
+    $('askSub').textContent = 'הלחיצה הזאת היא גם השעון — ממנה נולדת מפת צווארי הבקבוק, בלי שתעשה כלום נוסף.';
+    $('fromChip').style.display = 'none';
+    $('btns').className = 'big-btns single';
+    $('btns').innerHTML = `<button class="big-btn ok" id="bDone"><span class="g">✓</span><span class="t">סיימתי</span></button>`;
+    $('bDone').onclick = () => { flash('ok', '✓', 'נרשם — היחידה ממשיכה'); nextUnit(); renderStage(); };
+  }
+}
 
-  // תקלות לפי תחנה
-  const maxSt = Math.max(...byStation.map(x => x.n), 1);
-  $('byStation').innerHTML = byStation.map(x => `
-    <div class="hbar ${x === worst ? 'max' : ''}" data-st="${x.st.id}">
-      <span class="lbl"><span class="em">${x.st.icon}</span>${x.st.name}${x === worst ? '<span class="badge">צוואר בקבוק</span>' : ''}</span>
-      <span class="track"><span class="fill" style="width:${x.n / maxSt * 100}%"></span></span>
-      <span class="val">${x.n}</span>
-    </div>`).join('');
-  $('byStation').querySelectorAll('.hbar').forEach(row => {
-    const x = byStation.find(y => y.st.id === row.dataset.st);
-    const brk = DEFECTS.map(d => `${d.icon} ${bad.filter(s => s.station === x.st.id && s.type === d.id).length}`).join(' · ');
-    bindTip(row, `<b>${x.st.name}</b><br>נסרקו: ${x.scanned} · תקלות: ${x.n}<br>${brk}`);
+function openDefects(){
+  const up = upstreamOf(stationId);
+  const ov = document.createElement('div');
+  ov.className = 'overlay';
+  ov.innerHTML = `
+    <div class="oh">מה לא תקין במה שקיבלת מ־${up.icon} ${up.name}?</div>
+    <div class="defects">
+      ${MENU[stationId].map(id => { const d = dfOf(id); return `
+        <button class="defect" data-d="${d.id}">
+          <span class="ico">${d.icon}</span>
+          <span class="cap"><b>${d.name}</b>${d.long}</span>
+        </button>`; }).join('')}
+      <button class="defect cancel" data-d="">↩︎</button>
+    </div>`;
+  document.body.appendChild(ov);
+  ov.onclick = e => {
+    const b = e.target.closest('.defect'); if (!b) return;
+    ov.remove();
+    if (!b.dataset.d) return;
+    const d = dfOf(b.dataset.d), now = new Date();
+    live.unshift({
+      uid: cur.uid, type: d.id, caughtAt: stationId, origin: up.id,
+      t: `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`,
+      isLive: true,
+    });
+    flash('bad', d.icon, `נרשם — חוזר ל${up.name}`);
+    nextUnit(); renderStage(); renderDash();
+  };
+}
+
+function flash(kind, glyph, text){
+  const el = document.createElement('div');
+  el.className = 'flash ' + kind;
+  el.innerHTML = `<span class="g">${glyph}</span><span class="t">${text}</span>`;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 640);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   4. דשבורד
+   ═══════════════════════════════════════════════════════════ */
+const tip = $('tip');
+function hook(el, html){
+  el.addEventListener('mousemove', e => {
+    tip.innerHTML = html; tip.style.display = 'block';
+    tip.style.left = Math.min(e.clientX + 14, innerWidth  - tip.offsetWidth  - 8) + 'px';
+    tip.style.top  = Math.min(e.clientY + 16, innerHeight - tip.offsetHeight - 8) + 'px';
   });
+  el.addEventListener('mouseleave', () => tip.style.display = 'none');
+}
 
-  // פירוט לפי תחנה — כרטיס לכל תחנה, קנה מידה משותף לכולם
-  const cell = (stId, dId) => bad.filter(s => s.station === stId && s.type === dId).length;
-  const maxCell = Math.max(1, ...STATIONS.flatMap(st => DEFECTS.map(d => cell(st.id, d.id))));
-  $('stationDetail').innerHTML = byStation.map(x => `
-    <div class="st-card ${x === worst ? 'max' : ''}">
-      <div class="head"><span class="ico">${x.st.icon}</span><span class="nm">${x.st.name}</span></div>
-      <div class="stats">נסרקו ${x.scanned} · <b class="bad">${x.n} תקלות</b> · ${(100 - x.n / x.scanned * 100).toFixed(0)}% תקין</div>
-      ${DEFECTS.map(d => {
-        const n = cell(x.st.id, d.id);
-        return `<div class="mini ${n ? '' : 'zero'}" data-st="${x.st.id}" data-d="${d.id}">
-          <span class="em">${d.icon}</span>
-          <span class="track"><span class="fill" style="width:${n / maxCell * 100}%"></span></span>
-          <span class="val">${n}</span>
-        </div>`;
-      }).join('')}
-    </div>`).join('');
-  $('stationDetail').querySelectorAll('.mini').forEach(row => {
-    const st = STATIONS.find(s => s.id === row.dataset.st);
-    const d = DEFECTS.find(x => x.id === row.dataset.d);
-    bindTip(row, `<b>${st.name}</b><br>${d.icon} ${d.name}: ${cell(st.id, d.id)}`);
-  });
-
-  // תקלות לפי סוג
-  const byType = DEFECTS.map(d => ({ d, n: bad.filter(s => s.type === d.id).length }));
-  const maxT = Math.max(...byType.map(x => x.n), 1);
-  $('byType').innerHTML = byType.map(x => `
-    <div class="hbar" data-d="${x.d.id}">
-      <span class="lbl"><span class="em">${x.d.icon}</span>${x.d.name}</span>
-      <span class="track"><span class="fill" style="width:${x.n / maxT * 100}%"></span></span>
-      <span class="val">${x.n}</span>
-    </div>`).join('');
-  $('byType').querySelectorAll('.hbar').forEach(row => {
-    const x = byType.find(y => y.d.id === row.dataset.d);
-    const brk = STATIONS.map(st => `${st.icon} ${bad.filter(s => s.type === x.d.id && s.station === st.id).length}`).join(' · ');
-    bindTip(row, `<b>${x.d.icon} ${x.d.name}</b><br>סה״כ: ${x.n}<br>${brk}`);
-  });
-
-  // ציר זמן
-  const lastH = Math.max(17, ...scans.map(s => s.h));
-  const hours = [];
-  for (let h = 6; h <= lastH; h++) hours.push({ h, n: bad.filter(s => s.h === h).length });
-  const maxH = Math.max(...hours.map(x => x.n), 1);
-  $('timeline').innerHTML = hours.map(x => `
-    <div class="tcol" data-h="${x.h}">
-      ${x.n ? `<span class="n">${x.n}</span>` : ''}
-      <div class="bar" style="height:${x.n / maxH * 100}%"></div>
-    </div>`).join('');
-  $('taxis').innerHTML = hours.map(x => `<span>${String(x.h).padStart(2, '0')}</span>`).join('');
-  $('timeline').querySelectorAll('.tcol').forEach(col => {
-    const x = hours.find(y => y.h == col.dataset.h);
-    bindTip(col, `<b>${String(x.h).padStart(2, '0')}:00–${String(x.h).padStart(2, '0')}:59</b><br>תקלות: ${x.n}`);
-  });
-
-  // טבלת סריקות אדומות אחרונות
-  const recent = bad.slice(-10).reverse();
-  $('recentRows').innerHTML = recent.map(s => {
-    const st = STATIONS.find(x => x.id === s.station);
-    const d = DEFECTS.find(x => x.id === s.type);
-    return `<tr class="${s.live ? 'live' : ''}">
-      <td class="time">${String(s.h).padStart(2, '0')}:${String(s.m).padStart(2, '0')}</td>
-      <td>${st.icon} ${st.name}</td>
-      <td>${s.unit}</td>
-      <td><span class="em">${d.icon}</span>${d.name}</td>
+function renderProblems(){
+  $('probRows').innerHTML = [...openProblems, ...closedProblems].map(p => {
+    const d = dfOf(p.type), closed = p.state === 4;
+    const dots = [0,1,2,3,4].map(i => `<span class="d ${i <= p.state ? 'on' : ''}"></span>`).join('');
+    return `<tr class="${closed ? 'closed' : ''}">
+      <td>
+        <span class="em">${d.icon}</span><span class="what">${d.name}</span>
+        <div class="where">נתפס ב${stName(p.st)} · המקור: ${srcName(ORIGIN[p.type].born)}</div>
+      </td>
+      <td class="num">${hits(p)}</td>
+      <td>${closed ? '<span class="pill closed">✓ נסגר</span>'
+                   : `<span class="age ${ageClass(p.age)}">${p.age} יום</span>`}</td>
+      <td>${p.owner || '<span class="pill none">⚠︎ ללא אחראי</span>'}</td>
+      <td class="state"><span class="dotline">${dots}</span>${STATE_NAMES[p.state]}</td>
+      <td class="changed">${p.changed ? '<b>' + p.changed + '</b>' : '—'}</td>
     </tr>`;
   }).join('');
 }
 
-/* ═══════════ מעבר בין מסכים ═══════════ */
-function show(view) {
-  $('workerView').hidden = view !== 'worker';
-  $('dashView').hidden = view !== 'dash';
-  $('tabWorker').classList.toggle('active', view === 'worker');
-  $('tabDash').classList.toggle('active', view === 'dash');
-  if (view === 'dash') renderDashboard();
+function renderKpis(){
+  const oldest = Math.max(...openProblems.map(p => p.age));
+  const bn = STATIONS.map(s => ({ s, m: cycles[s.id].reduce((a,b) => a+b, 0) / cycles[s.id].length }))
+                     .reduce((a,b) => b.m > a.m ? b : a);
+  const rate = (defects.length / units.length * 100).toFixed(1);
+  const K = [
+    { l:'בעיות שנסגרו<br>— המספר האמיתי', v: closedProblems.length, c:'good', s:'הסיבה הוסרה, לא רק הפגם' },
+    { l:'בעיות פתוחות',        v: openProblems.length, c:'crit', s: openProblems.filter(p => !p.owner).length + ' ללא אחראי' },
+    { l:'הבעיה הוותיקה ביותר', v: oldest + ' יום',     c:'crit', s:'🕳️ חורי מעבר חסרים' },
+    { l:'פגמים שנתפסו',        v: caught.length,       c:'',     s: rate + '% מהיחידות' },
+    { l:'ברחו לשטח',           v: escaped.length,      c:'crit', s:'אף עמדה לא ראתה אותם' },
+    { l:'צוואר הבקבוק',        v: bn.s.icon,           c:'',     s: bn.s.name + ' · ' + bn.m.toFixed(1) + ' דק׳' },
+  ];
+  $('kpis').innerHTML = K.map(k =>
+    `<div class="kpi"><div class="lbl">${k.l}</div><div class="val ${k.c}">${k.v}</div><div class="sub">${k.s}</div></div>`).join('');
+}
+
+function renderPareto(){
+  const rows = DEFECTS.map(d => ({ d, n: caught.filter(x => x.type === d.id).length }))
+                      .sort((a,b) => b.n - a.n);
+  const total = rows.reduce((a,b) => a + b.n, 0) || 1;
+  const W = 640, H = 250, PT = 18, PB = 48, PL = 12, PR = 38;
+  const bw = (W - PL - PR) / rows.length, max = rows[0].n || 1;
+  const y  = v => PT + (H - PT - PB) * (1 - v / max);
+  const yc = p => PT + (H - PT - PB) * (1 - p);
+
+  let acc = 0;
+  const pts = rows.map((r, i) => { acc += r.n; return [PL + bw * (i + .5), yc(acc / total)]; });
+
+  const bars = rows.map((r, i) => {
+    const x = PL + bw * i + 4, w = bw - 8;
+    return `<g>
+      <rect x="${x}" y="${y(r.n)}" width="${w}" height="${Math.max((H-PB) - y(r.n), 1)}" rx="4"
+        fill="${i === 0 ? 'var(--series-deep)' : 'var(--series)'}" data-i="${i}"></rect>
+      <text class="vlabel" x="${x + w/2}" y="${y(r.n) - 6}" text-anchor="middle">${r.n}</text>
+      <text x="${x + w/2}" y="${H - PB + 22}" text-anchor="middle" font-size="19">${r.d.icon}</text>
+      <text class="axistext" x="${x + w/2}" y="${H - PB + 38}" text-anchor="middle">${Math.round(r.n/total*100)}%</text>
+    </g>`;
+  }).join('');
+
+  $('pareto').innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="פארטו — פגמים לפי סוג">
+    ${[0,.25,.5,.75,1].map(p => `<line class="gridline" x1="${PL}" x2="${W-PR}" y1="${yc(p)}" y2="${yc(p)}"></line>`).join('')}
+    <line class="axisline" x1="${PL}" x2="${W-PR}" y1="${H-PB}" y2="${H-PB}"></line>
+    ${bars}
+    <polyline points="${pts.map(p => p.join(',')).join(' ')}" fill="none" stroke="var(--ink-2)" stroke-width="2"></polyline>
+    ${pts.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="var(--surface)" stroke="var(--ink-2)" stroke-width="2"></circle>`).join('')}
+    ${[0,.5,1].map(p => `<text class="axistext" x="${W-PR+8}" y="${yc(p)+4}">${p*100}%</text>`).join('')}
+  </svg>`;
+
+  $('pareto').querySelectorAll('rect').forEach(r => {
+    const x = rows[+r.dataset.i];
+    hook(r, `<b>${x.d.icon} ${x.d.name}</b><br>${x.d.long}<br>${x.n} מקרים · ${Math.round(x.n/total*100)}% מהפגמים`);
+  });
+}
+
+function renderTrend(){
+  const per = DAYS.map((_, i) => caught.filter(d => d.di === i).length);
+  const W = 640, H = 250, PT = 24, PB = 40, PL = 30, PR = 12;
+  const max = Math.max(...per) * 1.15;
+  const bw  = (W - PL - PR) / per.length;
+  const y   = v => PT + (H - PT - PB) * (1 - v / max);
+
+  const bars = per.map((v, i) => {
+    const x = PL + bw * i + 2, w = bw - 4;
+    return `<rect x="${x}" y="${y(v)}" width="${w}" height="${Math.max((H-PB) - y(v), 1)}" rx="3"
+      fill="${i === SPIKE_DAY ? 'var(--critical)' : 'var(--series)'}" data-i="${i}"></rect>`;
+  }).join('');
+
+  $('trend').innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="פגמים ליום לאורך החודש">
+    ${[0,.5,1].map(p => `<line class="gridline" x1="${PL}" x2="${W-PR}" y1="${y(max*p)}" y2="${y(max*p)}"></line>`).join('')}
+    <line class="axisline" x1="${PL}" x2="${W-PR}" y1="${H-PB}" y2="${H-PB}"></line>
+    ${bars}
+    <text class="axistext" x="${PL-7}" y="${y(0)+4}"      text-anchor="end">0</text>
+    <text class="axistext" x="${PL-7}" y="${y(max)+10}"   text-anchor="end">${Math.round(max)}</text>
+    <text class="axistext" x="${PL}"   y="${H-14}">${fmtDay(DAYS[0])}</text>
+    <text class="axistext" x="${W-PR}" y="${H-14}" text-anchor="end">${fmtDay(DAYS[DAYS.length-1])}</text>
+    <text class="vlabel" x="${PL + bw*SPIKE_DAY + bw/2}" y="${y(per[SPIKE_DAY]) - 8}"
+      text-anchor="middle" fill="var(--crit-text)">משלוח פגום</text>
+  </svg>`;
+
+  $('trend').querySelectorAll('rect').forEach(r => {
+    const i = +r.dataset.i;
+    hook(r, `<b>${fmtDay(DAYS[i])}</b><br>${per[i]} פגמים נתפסו<br>150 יחידות באותו יום`);
+  });
+}
+
+function renderDist(){
+  const at = k => caught.filter(d => d.dist === k).length;
+  const cells = [
+    { v: at(0), l:'נתפס בהזדמנות הראשונה', cls:'hero' },
+    { v: at(1), l:'פוספס פעם אחת',         cls:'' },
+    { v: at(2), l:'פוספס פעמיים',          cls:'' },
+    { v: caught.filter(d => d.dist >= 3).length, l:'פוספס שלוש פעמים ומעלה', cls:'' },
+    { v: escaped.length, l:'אף אחד לא תפס — ברח לשטח', cls:'esc' },
+  ];
+  $('dist').innerHTML = cells.map(c =>
+    `<div class="dbox ${c.cls}"><div class="v">${c.v}</div><div class="l">${c.l}</div></div>`).join('');
+}
+
+function renderHeat(){
+  const cell = (st, ty) => caught.filter(d => d.caughtAt === st && d.type === ty).length;
+  const max  = Math.max(...STATIONS.flatMap(s => DEFECTS.map(d => cell(s.id, d.id))), 1);
+  const ramp = ['var(--s100)','var(--s200)','var(--s300)','var(--s400)','var(--s500)','var(--s600)','var(--s700)'];
+  const bg  = n => n === 0 ? 'var(--sunk)' : ramp[Math.min(6, Math.floor(n / max * 6 + .4))];
+  const fg  = n => n === 0 ? 'var(--muted)' : (n / max > .5 ? '#fff' : 'var(--ink)');
+
+  $('heat').innerHTML = `<table>
+    <thead><tr><th class="row"></th>${DEFECTS.map(d => `<th>${d.icon}</th>`).join('')}</tr></thead>
+    <tbody>${STATIONS.map(s => `<tr>
+      <th class="row">${s.icon} ${s.name}</th>
+      ${DEFECTS.map(d => { const n = cell(s.id, d.id);
+        return `<td><span class="cell" data-s="${s.id}" data-d="${d.id}"
+          style="background:${bg(n)};color:${fg(n)}">${n || '·'}</span></td>`; }).join('')}
+    </tr>`).join('')}</tbody></table>`;
+
+  $('heat').querySelectorAll('.cell').forEach(c => {
+    const n = cell(c.dataset.s, c.dataset.d), d = dfOf(c.dataset.d);
+    hook(c, `<b>${stIcon(c.dataset.s)} ${stName(c.dataset.s)}</b><br>${d.icon} ${d.name}<br>${n} מקרים נתפסו כאן`);
+  });
+}
+
+function renderCycle(){
+  const rows = STATIONS.map(s => ({ s, m: cycles[s.id].reduce((a,b) => a+b, 0) / cycles[s.id].length }));
+  const max  = Math.max(...rows.map(r => r.m));
+  $('cycle').innerHTML = rows.map(r => `
+    <div class="hbar ${r.m === max ? 'max' : ''}" data-s="${r.s.id}">
+      <span class="lbl"><span class="em">${r.s.icon}</span>${r.s.name}${r.m === max ? '<span class="badge">צוואר בקבוק</span>' : ''}</span>
+      <span class="track"><span class="fill" style="width:${r.m/max*100}%"></span></span>
+      <span class="val">${r.m.toFixed(1)}</span>
+    </div>`).join('');
+  $('cycle').querySelectorAll('.hbar').forEach(el => {
+    const r = rows.find(x => x.s.id === el.dataset.s);
+    hook(el, `<b>${r.s.name}</b><br>${r.m.toFixed(1)} דקות ליחידה בממוצע<br>נמדד לבד משתי הלחיצות`);
+  });
+}
+
+function renderSuppliers(){
+  const max = Math.max(...SUPPLIERS.map(s => s.rej));
+  $('suppliers').innerHTML = SUPPLIERS.map((s, i) => `
+    <div class="hbar ${s.rej === max ? 'max' : ''}" data-i="${i}">
+      <span class="lbl">${s.name}</span>
+      <span class="track"><span class="fill" style="width:${s.rej/max*100}%"></span></span>
+      <span class="val">${(s.rej*100).toFixed(1)}%</span>
+    </div>`).join('');
+  $('suppliers').querySelectorAll('.hbar').forEach(el => {
+    const s = SUPPLIERS[+el.dataset.i];
+    hook(el, `<b>${s.name}</b><br>${(s.rej*100).toFixed(1)}% מהאצוות נדחו בקבלת החומר<br>${Math.round(s.share*100)}% מהנפח שלנו`);
+  });
+}
+
+function renderAudit(){
+  const n = Math.round(units.length / 50);
+  const rows = [
+    { icon:'🧴', t:'גומייה שלא יושבת עד הסוף', n:9 },
+    { icon:'🔩', t:'בורג לא מהודק כנדרש',      n:6 },
+    { icon:'💧', t:'סיליקון חסר מתחת לטי',     n:4 },
+    { icon:'📏', t:'ריווח קלינים לא תקין',     n:3 },
+  ];
+  const tot = rows.reduce((a,b) => a + b.n, 0);
+  $('audit').innerHTML = `
+    <div class="dist" style="grid-template-columns:1fr 1fr;margin-bottom:14px">
+      <div class="dbox"><div class="v">${n}</div><div class="l">יחידות נבדקו לעומק</div></div>
+      <div class="dbox esc"><div class="v">${tot}</div><div class="l">פגמים שאף עמדה לא יכלה לראות</div></div>
+    </div>
+    ${rows.map(r => `<div class="hbar" style="grid-template-columns:1fr 74px">
+      <span class="lbl"><span class="em">${r.icon}</span>${r.t}</span>
+      <span class="val">${r.n} מקרים</span></div>`).join('')}`;
+}
+
+function renderFeed(){
+  const hist = caught.slice(-10).reverse().map(d => ({
+    uid: d.uid, type: d.type, caughtAt: d.caughtAt, origin: d.origin,
+    t: `${String(d.hour).padStart(2,'0')}:${String(d.min).padStart(2,'0')}`, isLive: false,
+  }));
+  $('feedRows').innerHTML = [...live, ...hist].slice(0, 12).map(r => {
+    const d = dfOf(r.type);
+    return `<tr class="${r.isLive ? 'live' : ''}">
+      <td class="mono">${r.isLive ? 'עכשיו' : r.t}</td>
+      <td>${stIcon(r.caughtAt)} ${stName(r.caughtAt)}</td>
+      <td class="mono">${r.uid}</td>
+      <td><span class="em">${d.icon}</span>${d.name}</td>
+      <td style="color:var(--muted)">${srcName(r.origin)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderDash(){
+  $('period').textContent = `${fmtDay(DAYS[0])} – ${fmtDay(DAYS[DAYS.length-1])} 2026 · ${DAYS.length} ימי עבודה`;
+  $('unitCount').textContent = units.length.toLocaleString('he-IL');
+  renderProblems(); renderKpis(); renderPareto(); renderTrend();
+  renderDist(); renderHeat(); renderCycle(); renderSuppliers(); renderAudit(); renderFeed();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   5. ניווט
+   ═══════════════════════════════════════════════════════════ */
+function show(which){
+  const dash = which === 'dash';
+  $('workerView').hidden = dash;
+  $('dashView').hidden = !dash;
+  $('tabDash').classList.toggle('active', dash);
+  $('tabWorker').classList.toggle('active', !dash);
+  history.replaceState(null, '', dash ? '#dash' : location.pathname);
+  if (dash) renderDash();
 }
 $('tabWorker').onclick = () => show('worker');
-$('tabDash').onclick = () => show('dash');
+$('tabDash').onclick   = () => show('dash');
 
-drawStations();
-newUnit();
+renderStations();
+renderStage();
+renderDash();
 if (location.hash === '#dash') show('dash');
 </script>
 </body>
