@@ -6,38 +6,28 @@
 <title>בקרת איכות — קוסטיקה</title>
 <style>
   :root {
-    --page:        #f9f9f7;
-    --surface:     #fcfcfb;
-    --sunk:        #f0efec;
-    --ink:         #0b0b0b;
-    --ink-2:       #52514e;
-    --muted:       #898781;
-    --grid:        #e1e0d9;
-    --baseline:    #c3c2b7;
-    --border:      rgba(11,11,11,.10);
+    /* ── כחול כהה ── */
+    --page:      #08121F;
+    --surface:   #10233A;
+    --raised:    #16304D;
+    --sunk:      #0C1B2E;
+    --ink:       #FFFFFF;
+    --ink-2:     #C6D6E7;
+    --muted:     #7E95AF;
+    --grid:      #1D3550;
+    --baseline:  #2B4869;
+    --border:    rgba(255,255,255,.13);
 
-    --series:      #2a78d6;
-    --series-deep: #104281;
-    --s100:#cde2fb; --s200:#9ec5f4; --s300:#6da7ec; --s400:#3987e5;
-    --s500:#256abf; --s600:#184f95; --s700:#0d366b;
+    --series:      #4C9BEA;
+    --series-deep: #9AC8F6;
+    --s0:#14283F; --s1:#1C3D5F; --s2:#265480; --s3:#316CA1;
+    --s4:#3F87C2; --s5:#5AA3DC; --s6:#8AC2EF; --s7:#B8DCF9;
 
-    --good:        #0ca30c;
-    --good-text:   #006300;
-    --serious:     #b35a2c;
-    --critical:    #d03b3b;
-    --crit-text:   #b12f2f;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --page:#0d0d0d; --surface:#1a1a19; --sunk:#262624;
-      --ink:#ffffff; --ink-2:#c3c2b7; --muted:#898781;
-      --grid:#2c2c2a; --baseline:#383835; --border:rgba(255,255,255,.10);
-      --series:#3987e5; --series-deep:#86b6ef;
-      --s100:#0d366b; --s200:#184f95; --s300:#256abf; --s400:#2a78d6;
-      --s500:#3987e5; --s600:#6da7ec; --s700:#9ec5f4;
-      --good:#0ca30c; --good-text:#0ca30c;
-      --serious:#ec835a; --critical:#d03b3b; --crit-text:#e26a6a;
-    }
+    --good:      #12A150;
+    --good-2:    #4ADE80;
+    --critical:  #E14A42;
+    --crit-2:    #FF9C93;
+    --warn-2:    #F5B851;
   }
   * { box-sizing: border-box; margin: 0; }
   html { background: var(--page); direction: rtl; }
@@ -55,7 +45,7 @@
   header h1 { font-size: 17px; font-weight: 700; }
   header .sub { font-size: 12.5px; color: var(--muted); }
   .demo-badge {
-    font-size: 11px; font-weight: 700; color: var(--crit-text);
+    font-size: 11px; font-weight: 700; color: var(--crit-2);
     border: 1px solid var(--critical); border-radius: 99px;
     padding: 2px 9px; white-space: nowrap;
   }
@@ -65,7 +55,7 @@
     font: inherit; font-size: 15px; font-weight: 600;
     padding: 10px 18px; border-radius: 10px; cursor: pointer;
   }
-  .tab.active { background: var(--series); border-color: var(--series); color: #fff; }
+  .tab.active { background: var(--series); border-color: var(--series); color: #05121F; }
   .tab:focus-visible { outline: 2px solid var(--series); outline-offset: 2px; }
 
   main { max-width: 1120px; margin: 0 auto; padding: 20px; }
@@ -78,130 +68,170 @@
   .card h2 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
   .card .hint { font-size: 12.5px; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
 
-  /* ══════════ מסך עובד ══════════ */
-  .worker-note {
-    font-size: 13px; color: var(--ink-2); background: var(--surface);
-    border: 1px dashed var(--baseline); border-radius: 10px;
-    padding: 9px 14px; margin-bottom: 16px; line-height: 1.55;
-  }
-  .stations { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 16px; }
+  /* ══════════ עמדות ══════════ */
+  .stations { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 14px; }
   .station {
     border: 2px solid var(--border); background: var(--surface); color: var(--ink);
     border-radius: 14px; padding: 12px 6px 10px; cursor: pointer; font: inherit;
     display: flex; flex-direction: column; align-items: center; gap: 3px;
   }
   .station .num { font-size: 12px; font-weight: 800; color: var(--muted); }
-  .station .ico { font-size: 36px; line-height: 1.15; }
-  .station .nm { font-size: 12.5px; font-weight: 700; text-align: center; line-height: 1.25; }
+  .station .ico { font-size: 34px; line-height: 1.15; }
+  .station .nm  { font-size: 12.5px; font-weight: 700; text-align: center; line-height: 1.25; }
   .station .cap { font-size: 10.5px; color: var(--muted); text-align: center; line-height: 1.3; }
-  .station.active { border-color: var(--series); box-shadow: 0 0 0 3px color-mix(in srgb, var(--series) 25%, transparent); }
+  .station.active { border-color: var(--series); background: var(--raised); }
   .station.active .num { color: var(--series); }
   .station:focus-visible { outline: 2px solid var(--series); outline-offset: 2px; }
 
-  .stage {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 14px; padding: 16px 18px; margin-bottom: 14px;
-  }
-  .steps { display: flex; gap: 8px; margin-bottom: 14px; }
+  /* ══════════ שאלה ══════════ */
+  .stage { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; }
+  .steps { display: flex; gap: 8px; margin-bottom: 12px; }
   .pip { flex: 1; height: 5px; border-radius: 3px; background: var(--grid); }
   .pip.on { background: var(--series); }
   .ask { font-size: 21px; font-weight: 800; margin-bottom: 4px; }
   .ask-sub { font-size: 13px; color: var(--muted); line-height: 1.5; }
   .from {
     display: inline-flex; align-items: center; gap: 8px;
-    background: var(--sunk); border-radius: 99px; padding: 6px 14px 6px 10px;
+    background: var(--raised); border-radius: 99px; padding: 6px 14px 6px 10px;
     margin-top: 12px; font-size: 14px; font-weight: 700;
   }
-  .from .ico { font-size: 21px; }
+  .from .ico { font-size: 20px; }
   .from .lbl { color: var(--muted); font-weight: 600; font-size: 12.5px; }
 
-  .unit-card {
-    display: flex; align-items: center; justify-content: center; gap: 24px;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 14px; padding: 14px; margin-bottom: 14px;
+  /* ══════════ פקודת ייצור + רשימת חיתוך ══════════ */
+  .order { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 12px; }
+  .order-head {
+    display: flex; flex-wrap: wrap; gap: 8px 26px; align-items: baseline;
+    padding: 13px 18px; background: var(--raised); border-bottom: 1px solid var(--border);
   }
-  .barcode { display: flex; align-items: stretch; height: 48px; }
-  .barcode span { background: var(--ink); margin-inline-end: 3px; }
-  .unit-id { font-size: 32px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: 1px; }
-  .unit-lbl { font-size: 12px; color: var(--muted); }
-  .unit-fam { font-size: 12px; color: var(--ink-2); font-weight: 700; }
+  .oh-item .k { font-size: 10.5px; color: var(--muted); letter-spacing: .04em; }
+  .oh-item .v { font-size: 17px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .oh-item .v.big { font-size: 21px; color: var(--series-deep); }
 
-  .big-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .cut { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .cut th {
+    font-size: 11px; color: var(--muted); font-weight: 700; letter-spacing: .03em;
+    padding: 8px 12px; border-bottom: 1px solid var(--baseline); text-align: start; white-space: nowrap;
+  }
+  .cut td { padding: 9px 12px; border-bottom: 1px solid var(--grid); vertical-align: middle; }
+  .cut tr:last-child td { border-bottom: none; }
+  .cut .pn   { font-size: 17px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: .5px; }
+  .cut .role { color: var(--ink-2); }
+  .cut .len  { font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .cut .len .hw { font-size: 12px; color: var(--muted); margin-inline-start: 3px; }
+  .cut .qty  { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; text-align: center; }
+  .shape { width: 46px; height: 24px; color: var(--ink); flex: none; }
+  .shape svg { width: 100%; height: 100%; display: block; }
+  .cut .rolecell { display: flex; align-items: center; gap: 11px; }
+
+  .cut.pick tr { cursor: pointer; }
+  .cut.pick tr:hover td { background: var(--raised); }
+  .cut.pick tr:focus-visible td { background: var(--raised); outline: 2px solid var(--series); }
+  .cut tr.bad td { background: color-mix(in srgb, var(--critical) 18%, transparent); }
+
+  /* ══════════ כפתורים ══════════ */
+  .big-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .big-btns.single { grid-template-columns: 1fr; }
   .big-btn {
     border: none; border-radius: 18px; cursor: pointer; font: inherit; color: #fff;
-    min-height: 190px; display: flex; flex-direction: column;
+    min-height: 160px; display: flex; flex-direction: column;
     align-items: center; justify-content: center; gap: 6px;
   }
-  .big-btn .g { font-size: 84px; line-height: 1; }
-  .big-btn .t { font-size: 17px; font-weight: 700; opacity: .95; }
+  .big-btn .g { font-size: 72px; line-height: 1; }
+  .big-btn .t { font-size: 16px; font-weight: 700; }
   .big-btn:active { transform: scale(.97); }
-  .big-btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+  .big-btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
   .big-btn.ok  { background: var(--good); }
   .big-btn.bad { background: var(--critical); }
 
-  .overlay {
-    position: fixed; inset: 0; z-index: 40;
-    background: color-mix(in srgb, var(--page) 90%, black);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 16px; padding: 20px; overflow-y: auto;
+  .move-btn {
+    width: 100%; margin-top: 12px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--ink-2);
+    border-radius: 14px; padding: 15px; font: inherit; font-size: 15px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
   }
-  .overlay .oh { font-size: 20px; font-weight: 800; text-align: center; }
-  .defects { display: grid; grid-template-columns: repeat(3, minmax(112px, 180px)); gap: 14px; }
+  .move-btn:hover { background: var(--raised); color: var(--ink); }
+  .move-btn:focus-visible { outline: 2px solid var(--series); outline-offset: 2px; }
+  .move-btn .g { font-size: 22px; }
+
+  /* ══════════ שכבות-על ══════════ */
+  .overlay {
+    position: fixed; inset: 0; z-index: 40; background: rgba(4,10,18,.94);
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+    gap: 16px; padding: 24px 16px; overflow-y: auto;
+  }
+  .overlay .oh { font-size: 20px; font-weight: 800; text-align: center; margin-top: 8px; }
+  .overlay .osub { font-size: 13.5px; color: var(--muted); text-align: center; margin-top: -8px; }
+  .overlay .sheet {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden; width: 100%; max-width: 700px;
+  }
+
+  .defects { display: grid; grid-template-columns: repeat(3, minmax(104px, 176px)); gap: 13px; }
   .defect {
     border: 2px solid var(--border); background: var(--surface);
     border-radius: 18px; cursor: pointer; font: inherit; color: var(--ink);
-    padding: 18px 8px 13px; display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 17px 8px 12px; display: flex; flex-direction: column; align-items: center; gap: 5px;
   }
-  .defect .ico { font-size: 54px; line-height: 1.1; }
+  .defect .ico { font-size: 50px; line-height: 1.1; }
   .defect .cap { font-size: 11.5px; color: var(--muted); text-align: center; line-height: 1.35; }
   .defect .cap b { color: var(--ink); display: block; font-size: 12.5px; }
   .defect:active { transform: scale(.96); }
   .defect:focus-visible { outline: 3px solid var(--series); outline-offset: 2px; }
-  .defect.cancel { grid-column: 1 / -1; min-height: 56px; padding: 10px; flex-direction: row; font-size: 28px; }
+
+  .cancel {
+    border: 1px solid var(--border); background: var(--surface); color: var(--ink-2);
+    border-radius: 14px; padding: 14px 40px; font: inherit; font-size: 24px; cursor: pointer;
+  }
+  .cancel:hover { background: var(--raised); }
+
+  .st-pick { display: grid; grid-template-columns: repeat(5, minmax(96px, 150px)); gap: 12px; }
+  .st-opt {
+    border: 2px solid var(--border); background: var(--surface); color: var(--ink);
+    border-radius: 16px; padding: 16px 8px 12px; cursor: pointer; font: inherit;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .st-opt .ico { font-size: 40px; }
+  .st-opt .nm  { font-size: 12.5px; font-weight: 700; text-align: center; line-height: 1.25; }
+  .st-opt .num { font-size: 11px; color: var(--muted); font-weight: 800; }
+  .st-opt:hover { border-color: var(--series); background: var(--raised); }
+  .st-opt.here { opacity: .38; cursor: not-allowed; }
+  .st-opt:focus-visible { outline: 3px solid var(--series); outline-offset: 2px; }
 
   .flash {
     position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column;
     align-items: center; justify-content: center; gap: 10px;
     color: #fff; pointer-events: none; text-align: center; padding: 20px;
   }
-  .flash .g { font-size: 120px; line-height: 1; }
-  .flash .t { font-size: 21px; font-weight: 700; }
-  .flash.ok  { background: color-mix(in srgb, var(--good) 92%, black); }
-  .flash.bad { background: color-mix(in srgb, var(--critical) 92%, black); }
+  .flash .g { font-size: 110px; line-height: 1; }
+  .flash .t { font-size: 20px; font-weight: 700; }
+  .flash .s { font-size: 15px; opacity: .9; font-variant-numeric: tabular-nums; }
+  .flash.ok   { background: #0B7C3D; }
+  .flash.bad  { background: #B5322B; }
+  .flash.move { background: #1D5E96; }
 
   /* ══════════ דשבורד ══════════ */
-  .dash-bar {
-    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-    margin-bottom: 14px; font-size: 13px; color: var(--muted);
-  }
+  .dash-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; font-size: 13px; color: var(--muted); }
   .dash-bar b { color: var(--ink); font-weight: 700; }
 
   .prob-card { border-color: var(--critical); margin-bottom: 14px; }
-  .prob-wrap { overflow-x: auto; }
+  .prob-wrap, .order-wrap { overflow-x: auto; }
   .prob-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
-  .prob-table th {
-    text-align: start; font-size: 11.5px; color: var(--muted); font-weight: 600;
-    padding: 6px 8px; border-bottom: 1px solid var(--baseline); white-space: nowrap;
-  }
+  .prob-table th { text-align: start; font-size: 11.5px; color: var(--muted); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--baseline); white-space: nowrap; }
   .prob-table td { padding: 10px 8px; border-bottom: 1px solid var(--grid); vertical-align: middle; }
   .prob-table tr:last-child td { border-bottom: none; }
-  .prob-table tr.closed { opacity: .62; }
+  .prob-table tr.closed { opacity: .55; }
   .prob-table .em { font-size: 20px; margin-inline-end: 7px; vertical-align: -3px; }
   .prob-table .what { font-weight: 700; }
   .prob-table .where { font-size: 12px; color: var(--muted); margin-top: 2px; }
   .num { font-variant-numeric: tabular-nums; font-weight: 700; }
   .age { font-variant-numeric: tabular-nums; font-weight: 800; white-space: nowrap; }
-  .age.critical { color: var(--crit-text); }
-  .age.serious  { color: var(--serious); }
+  .age.critical { color: var(--crit-2); }
+  .age.serious  { color: var(--warn-2); }
   .age.warning  { color: var(--ink-2); }
-  .pill {
-    display: inline-flex; align-items: center; gap: 5px;
-    font-size: 11.5px; font-weight: 700; border-radius: 99px;
-    padding: 3px 9px; border: 1px solid var(--baseline); white-space: nowrap;
-  }
+  .pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 700; border-radius: 99px; padding: 3px 9px; border: 1px solid var(--baseline); white-space: nowrap; }
   .pill.none   { color: #fff; background: var(--critical); border-color: var(--critical); }
-  .pill.closed { color: var(--good-text); border-color: var(--good); }
+  .pill.closed { color: var(--good-2); border-color: var(--good); }
   .state { font-size: 12px; color: var(--ink-2); white-space: nowrap; }
   .dotline { display: inline-flex; gap: 3px; margin-inline-end: 6px; vertical-align: 1px; }
   .dotline .d { width: 7px; height: 7px; border-radius: 2px; background: var(--grid); }
@@ -209,12 +239,30 @@
   .changed { font-size: 12px; color: var(--muted); white-space: nowrap; }
   .changed b { color: var(--ink-2); }
 
+  /* פרופילים להזמנה */
+  .order-card { border-color: var(--warn-2); margin-bottom: 14px; }
+  .otbl { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .otbl th { text-align: start; font-size: 11.5px; color: var(--muted); font-weight: 600; padding: 6px 10px; border-bottom: 1px solid var(--baseline); white-space: nowrap; }
+  .otbl td { padding: 11px 10px; border-bottom: 1px solid var(--grid); vertical-align: middle; }
+  .otbl tr:last-child td { border-bottom: none; }
+  .otbl .pn { font-size: 17px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: .5px; }
+  .otbl .len { font-weight: 800; font-variant-numeric: tabular-nums; }
+  .otbl .rolecell { display: flex; align-items: center; gap: 10px; }
+  .otbl .sub { font-size: 11.5px; color: var(--muted); }
+  .btn-order {
+    border: 1px solid var(--warn-2); background: transparent; color: var(--warn-2);
+    border-radius: 99px; padding: 5px 14px; font: inherit; font-size: 12.5px; font-weight: 700;
+    cursor: pointer; white-space: nowrap;
+  }
+  .btn-order:hover { background: var(--warn-2); color: #1B1405; }
+  .btn-order.done { border-color: var(--good); color: var(--good-2); cursor: default; }
+
   .kpis { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 14px; }
   .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 13px 14px; }
   .kpi .lbl { font-size: 12px; color: var(--muted); margin-bottom: 5px; line-height: 1.35; min-height: 32px; }
-  .kpi .val { font-size: 28px; font-weight: 800; line-height: 1.1; }
-  .kpi .val.good { color: var(--good-text); }
-  .kpi .val.crit { color: var(--crit-text); }
+  .kpi .val { font-size: 27px; font-weight: 800; line-height: 1.1; }
+  .kpi .val.good { color: var(--good-2); }
+  .kpi .val.crit { color: var(--crit-2); }
   .kpi .sub { font-size: 11.5px; color: var(--ink-2); margin-top: 3px; }
 
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
@@ -230,48 +278,42 @@
   .hbar .lbl { font-size: 13px; color: var(--ink-2); }
   .hbar .lbl .em { margin-inline-end: 6px; }
   .hbar .track { display: block; background: var(--sunk); border-radius: 4px; height: 22px; overflow: hidden; }
-  .hbar .fill { display: block; background: var(--series); height: 100%; border-start-end-radius: 4px; border-end-end-radius: 4px; }
+  .hbar .fill  { display: block; background: var(--series); height: 100%; border-start-end-radius: 4px; border-end-end-radius: 4px; }
   .hbar.max .fill { background: var(--series-deep); }
   .hbar .val { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; text-align: start; }
   .hbar.max .lbl, .hbar.max .val { font-weight: 800; color: var(--ink); }
-  .badge {
-    display: inline-block; font-size: 10.5px; font-weight: 700; color: var(--ink);
-    border: 1px solid var(--baseline); border-radius: 99px; padding: 1px 8px; margin-inline-start: 6px;
-  }
+  .badge { display: inline-block; font-size: 10.5px; font-weight: 700; color: var(--ink); border: 1px solid var(--baseline); border-radius: 99px; padding: 1px 8px; margin-inline-start: 6px; }
 
   .heat { overflow-x: auto; }
   .heat table { border-collapse: separate; border-spacing: 2px; font-size: 12px; }
   .heat th { font-size: 11px; color: var(--muted); font-weight: 600; padding: 3px 5px; white-space: nowrap; }
   .heat th.row { text-align: start; }
   .heat td { text-align: center; }
-  .cell {
-    display: block; min-width: 42px; padding: 9px 4px; border-radius: 6px;
-    font-variant-numeric: tabular-nums; font-weight: 700;
-  }
+  .cell { display: block; min-width: 42px; padding: 9px 4px; border-radius: 6px; font-variant-numeric: tabular-nums; font-weight: 700; }
 
   .dist { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
   .dbox { background: var(--sunk); border-radius: 10px; padding: 13px 8px; text-align: center; }
   .dbox .v { font-size: 25px; font-weight: 800; font-variant-numeric: tabular-nums; }
   .dbox .l { font-size: 11.5px; color: var(--muted); margin-top: 3px; line-height: 1.35; }
-  .dbox.hero { background: color-mix(in srgb, var(--series) 15%, transparent); }
+  .dbox.hero { background: color-mix(in srgb, var(--series) 22%, transparent); }
   .dbox.hero .v { color: var(--series-deep); }
-  .dbox.esc { background: color-mix(in srgb, var(--critical) 12%, transparent); }
-  .dbox.esc .v { color: var(--crit-text); }
+  .dbox.esc  { background: color-mix(in srgb, var(--critical) 20%, transparent); }
+  .dbox.esc .v { color: var(--crit-2); }
 
   table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
   table.t th { text-align: start; font-size: 11.5px; color: var(--muted); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--baseline); }
   table.t td { padding: 8px; border-bottom: 1px solid var(--grid); }
   table.t td.mono { font-variant-numeric: tabular-nums; color: var(--ink-2); }
   table.t td .em { font-size: 19px; margin-inline-end: 8px; vertical-align: -3px; }
-  table.t tr.live td { background: color-mix(in srgb, var(--series) 9%, transparent); }
+  table.t tr.live td { background: color-mix(in srgb, var(--series) 16%, transparent); }
+  table.t tr.mv td { color: var(--series-deep); }
 
   #tip {
     position: fixed; z-index: 60; pointer-events: none; display: none;
-    background: var(--ink); color: var(--page);
-    font-size: 12.5px; padding: 7px 11px; border-radius: 8px; max-width: 280px;
-    line-height: 1.45;
+    background: #fff; color: #08121F;
+    font-size: 12.5px; padding: 7px 11px; border-radius: 8px; max-width: 280px; line-height: 1.45;
+    font-weight: 600;
   }
-
   footer { text-align: center; font-size: 12px; color: var(--muted); padding: 12px 0 30px; }
 
   @media (max-width: 980px) { .kpis { grid-template-columns: repeat(3, 1fr); } }
@@ -279,11 +321,13 @@
     .grid2 { grid-template-columns: 1fr; }
     .kpis  { grid-template-columns: repeat(2, 1fr); }
     .stations { grid-template-columns: repeat(3, 1fr); }
-    .defects { grid-template-columns: repeat(2, 1fr); }
-    .big-btn { min-height: 150px; }
-    .big-btn .g { font-size: 62px; }
+    .defects  { grid-template-columns: repeat(2, 1fr); }
+    .st-pick  { grid-template-columns: repeat(2, 1fr); }
+    .big-btn { min-height: 130px; }
+    .big-btn .g { font-size: 56px; }
     .dist { grid-template-columns: repeat(2, 1fr); }
     .hbar { grid-template-columns: 110px 1fr 46px; }
+    .cut th:nth-child(5), .cut td:nth-child(5) { display: none; }
   }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -302,13 +346,8 @@
   </nav>
 </header>
 
-<!-- ══════════ מסך עובד ══════════ -->
+<!-- ══════════ עובד ══════════ -->
 <main id="workerView">
-  <div class="worker-note">
-    💡 <b>מה שהעובד רואה:</b> אפס טקסט — רק אייקונים וצבעים. הכיתוב כאן הוא להדגמה בלבד.
-    <b>הכלל:</b> אף אחד לא בודק את עצמו — כל עמדה בודקת את מה שקיבלה מהעמדה שלפניה.
-  </div>
-
   <div class="stations" id="stationPicker"></div>
 
   <div class="stage">
@@ -318,16 +357,14 @@
     <div class="from" id="fromChip"></div>
   </div>
 
-  <div class="unit-card">
-    <div>
-      <div class="unit-lbl">היחידה שלפניך</div>
-      <div class="unit-id" id="unitId"></div>
-      <div class="unit-fam" id="unitFam"></div>
-    </div>
-    <div class="barcode" id="barcode" aria-hidden="true"></div>
+  <div class="order">
+    <div class="order-head" id="orderHead"></div>
+    <div class="order-wrap"><table class="cut" id="cutList"></table></div>
   </div>
 
   <div class="big-btns" id="btns"></div>
+
+  <button class="move-btn" id="moveBtn"><span class="g">🔀</span> העבר את המוצר לעמדה אחרת</button>
 </main>
 
 <!-- ══════════ דשבורד ══════════ -->
@@ -339,6 +376,22 @@
     <span>5 עמדות · 3 משפחות מוצר</span>
   </div>
 
+  <!-- פרופילים להזמנה -->
+  <section class="card order-card">
+    <h2>פרופילים להזמנה — מה בדיוק נשבר</h2>
+    <div class="hint">
+      כשעובד לוחץ על פגם הוא מסמן <b>איזה פרופיל</b> מרשימת החיתוך. כאן מופיע מספר הקטלוג המדויק, המידה והכמות —
+      <b>מנהל הרצפה מזמין ידנית</b>. המערכת לא מזמינה כלום לבד.
+    </div>
+    <div class="order-wrap">
+      <table class="otbl">
+        <thead><tr><th>פרופיל</th><th>תפקיד</th><th>אורך</th><th>כמ'</th><th>פק"ע / פרויקט</th><th>הפגם</th><th></th></tr></thead>
+        <tbody id="orderRows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- בעיות פתוחות -->
   <section class="card prob-card">
     <h2>בעיות פתוחות — לפי גיל</h2>
     <div class="hint">
@@ -358,34 +411,31 @@
   <div class="grid2">
     <section class="card">
       <h2>מה נשבר — לפי סוג</h2>
-      <div class="hint">עמודות = מקרים · קו = אחוז מצטבר. שני סוגים מסבירים את רוב הפגמים.</div>
+      <div class="hint">עמודות = מקרים · קו = אחוז מצטבר.</div>
       <div class="viz" id="pareto"></div>
     </section>
     <section class="card">
       <h2>פגמים לאורך החודש</h2>
-      <div class="hint">כל עמודה = יום עבודה. הקפיצה באדום = משלוח חומר פגום מספק.</div>
+      <div class="hint">כל עמודה = יום עבודה. האדום = משלוח חומר פגום מספק.</div>
       <div class="viz" id="trend"></div>
     </section>
   </div>
 
   <section class="card" style="margin-bottom:12px">
     <h2>האם תופסים בהזדמנות הראשונה?</h2>
-    <div class="hint">
-      זה המבחן של השיטה. כל פגם עובר בעמדות שיכולות לראות אותו — <b>העמדה הראשונה מביניהן אמורה לתפוס אותו</b>,
-      לפני שמישהו הספיק לבנות עליו. כל "פספוס" הוא עמדה שהחזיקה את החלק ביד ולא הסתכלה.
-    </div>
+    <div class="hint">המבחן של השיטה: כל "פספוס" הוא עמדה שהחזיקה את החלק ביד ולא הסתכלה.</div>
     <div class="dist" id="dist"></div>
   </section>
 
   <div class="grid2">
     <section class="card">
       <h2>איפה נתפס כל סוג פגם</h2>
-      <div class="hint">שורה = העמדה שתפסה · עמודה = סוג הפגם. כהה יותר = יותר מקרים.</div>
+      <div class="hint">שורה = העמדה שתפסה · עמודה = סוג הפגם.</div>
       <div class="heat" id="heat"></div>
     </section>
     <section class="card">
       <h2>צוואר בקבוק — דקות ליחידה</h2>
-      <div class="hint">מחושב לבד משתי הלחיצות. אף אחד לא מדד כלום ביד, אף אחד לא מילא טופס.</div>
+      <div class="hint">מחושב לבד משתי הלחיצות. אף אחד לא מדד כלום ביד.</div>
       <div id="cycle"></div>
     </section>
   </div>
@@ -393,21 +443,21 @@
   <div class="grid2">
     <section class="card">
       <h2>ספקים — אחוז אצוות שנדחו</h2>
-      <div class="hint">קבלת החומר בונה תיק. אחרי חודש יש מספר לדבר עליו מול הספק.</div>
+      <div class="hint">קבלת החומר בונה תיק מול הספק.</div>
       <div id="suppliers"></div>
     </section>
     <section class="card">
       <h2>ביקורת מדגמית — מה שהעין לא רואה</h2>
-      <div class="hint">יחידה אחת מכל 50, בדיקה עמוקה. תופסת פגמים ש<b>אף עמדה לא יכולה לראות</b> — והלקוח כן, בעוד שנתיים.</div>
+      <div class="hint">יחידה אחת מכל 50, בדיקה עמוקה. פגמים ש<b>אף עמדה לא יכולה לראות</b>.</div>
       <div id="audit"></div>
     </section>
   </div>
 
   <section class="card">
-    <h2>פגמים אחרונים</h2>
-    <div class="hint">שורות מודגשות = נקלטו עכשיו בהדגמה החיה (לחצו ✗ במסך העובד)</div>
+    <h2>פעילות אחרונה</h2>
+    <div class="hint">פגמים ומעברים בין עמדות. שורות מודגשות = נקלטו עכשיו בהדגמה החיה.</div>
     <table class="t">
-      <thead><tr><th>מתי</th><th>נתפס בעמדה</th><th>יחידה</th><th>הפגם</th><th>המקור</th></tr></thead>
+      <thead><tr><th>מתי</th><th>עמדה</th><th>יחידה</th><th>מה קרה</th><th>מקור / יעד</th></tr></thead>
       <tbody id="feedRows"></tbody>
     </table>
   </section>
@@ -415,11 +465,11 @@
 </main>
 
 <div id="tip" role="status"></div>
-<footer>אב-טיפוס · כל הנתונים מדומים לצורך הדגמה בלבד · קוסטיקה 2026</footer>
+<footer>אב-טיפוס · כל הנתונים מדומים · רשימת החיתוך לדוגמה מבוססת על פרט 49, הירדן 12 ת"א · קוסטיקה 2026</footer>
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   1. הגדרות — עמדות, פגמים, מי בודק את מי
+   1. הגדרות
    ═══════════════════════════════════════════════════════════ */
 const STATIONS = [
   { id:'recv',  num:0, icon:'📥', name:'קבלת חומר',       cap:'בודקת את הספק' },
@@ -430,18 +480,46 @@ const STATIONS = [
 ];
 const SUPPLIER = { id:'sup', icon:'🚛', name:'הספק' };
 
-const DEFECTS = [
-  { id:'bent',  icon:'〰️', name:'עקום',          long:'פרופיל / חומר' },
-  { id:'dmg',   icon:'💥', name:'נזק פיזי',      long:'מכה · שריטה · שבר' },
-  { id:'paint', icon:'🎨', name:'צבע פגום',      long:'צבע לא טוב' },
-  { id:'matl',  icon:'📦', name:'חומר / פרזול',  long:'חסר או לא נכון' },
-  { id:'hole',  icon:'🕳️', name:'חור חסר',       long:'חורי מעבר · קדחים' },
-  { id:'meas',  icon:'📐', name:'מידה שגויה',    long:'לא תואם פק"ע' },
-  { id:'motor', icon:'⚙️', name:'מנוע',          long:'לא נכון / צד הפוך' },
-  { id:'glass', icon:'🪟', name:'זכוכית / גומי', long:'טעות · שבר · ישיבה' },
+/* חתכי הפרופילים — צורות זמניות. יוחלפו בחתכים האמיתיים מקובץ הייצוא של Opera. */
+const SHAPES = {
+  frame: '<svg viewBox="0 0 46 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h40v14H3z"/><path d="M14 5v14"/><path d="M43 9h-6"/></svg>',
+  sash:  '<svg viewBox="0 0 46 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h26v6h14v8H3z"/><path d="M29 11h-8"/></svg>',
+  bead:  '<svg viewBox="0 0 46 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5h30v5H16v9H8z"/></svg>',
+  add:   '<svg viewBox="0 0 46 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 6h20v12h18"/><path d="M25 12h10"/></svg>',
+  trim:  '<svg viewBox="0 0 46 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 6h36"/><path d="M5 6v12h9"/></svg>',
+  rod:   '<svg viewBox="0 0 46 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 7h30v10H8z"/><path d="M8 12h30"/></svg>',
+};
+
+/* רשימת החיתוך — מהדף האמיתי: פרט 49, הירדן 12 ת"א 156/2026 */
+const ORDER = {
+  po: 'mg-0306', project: 'הירדן 12 ת"א — 156/2026', part: '49', qty: 1,
+};
+const CUTLIST = [
+  { pn:'07359', shape:'frame', role:'משקוף+הלבשה 26*40 מ"מ',            len:1138, hw:'H', qty:2 },
+  { pn:'07359', shape:'frame', role:'משקוף+הלבשה 26*40 מ"מ',            len:1127, hw:'W', qty:2 },
+  { pn:'07379', shape:'sash',  role:'כנף לזיגוג 40-33 מ"מ מידה 36.7',   len:1098, hw:'H', qty:2 },
+  { pn:'07379', shape:'sash',  role:'כנף לזיגוג 40-33 מ"מ מידה 36.7',   len:1087, hw:'W', qty:2 },
+  { pn:'06976', shape:'bead',  role:'סרגל זיגוג לכנף',                   len:1014, hw:'W', qty:2 },
+  { pn:'06976', shape:'bead',  role:'סרגל זיגוג לכנף',                   len: 989, hw:'H', qty:2 },
+  { pn:'07423', shape:'add',   role:'תוספת להתקנת חלון',                 len:1075, hw:'W', qty:2 },
+  { pn:'07423', shape:'add',   role:'תוספת להתקנת חלון',                 len:1064, hw:'W', qty:2 },
+  { pn:'03772', shape:'trim',  role:'הלבשה 80*23.4 מ"מ',                 len:2213, hw:'H', qty:1 },
+  { pn:'03772', shape:'trim',  role:'הלבשה 80*23.4 מ"מ',                 len:1177, hw:'W', qty:1 },
+  { pn:'03685', shape:'rod',   role:'מוט מוביל 19 מ"מ',                  len: 334, hw:'H', qty:1 },
+  { pn:'03685', shape:'rod',   role:'מוט מוביל 19 מ"מ',                  len: 294, hw:'H', qty:1 },
 ];
 
-// מה כל עמדה יכולה לדווח על מה שקיבלה
+const DEFECTS = [
+  { id:'bent',  icon:'〰️', name:'עקום',          long:'פרופיל / חומר',      profile:true  },
+  { id:'dmg',   icon:'💥', name:'נזק פיזי',      long:'מכה · שריטה · שבר',  profile:true  },
+  { id:'paint', icon:'🎨', name:'צבע פגום',      long:'צבע לא טוב',         profile:true  },
+  { id:'meas',  icon:'📐', name:'מידה שגויה',    long:'לא תואם רשימת חיתוך', profile:true },
+  { id:'hole',  icon:'🕳️', name:'חור חסר',       long:'חורי מעבר · קדחים',  profile:true  },
+  { id:'matl',  icon:'📦', name:'חומר / פרזול',  long:'חסר או לא נכון',     profile:false },
+  { id:'motor', icon:'⚙️', name:'מנוע',          long:'לא נכון / צד הפוך',  profile:false },
+  { id:'glass', icon:'🪟', name:'זכוכית / גומי', long:'טעות · שבר · ישיבה', profile:false },
+];
+
 const MENU = {
   recv:  ['bent','paint','dmg','matl'],
   cut:   ['bent','paint','dmg','matl'],
@@ -456,28 +534,28 @@ const FAMILIES = [
   { id:'C', name:'הזזה + מונובלוק', series:'7000·7500·9000·9200', route:['recv','cut','proc','mono','glaze'], w:45 },
 ];
 
-// איפה כל פגם נולד, ומה הסיכוי שעמדה שיכולה לראות אותו — באמת תראה אותו
 const ORIGIN = {
   bent:  { born:'sup',  rate:.024, see:.80 },
   paint: { born:'sup',  rate:.013, see:.72 },
   matl:  { born:'sup',  rate:.015, see:.85 },
-  glass: { born:'sup',  rate:.011, see:.75 },   // זכוכית/גומי שהגיעו לא נכונים — רק הזיגוג רואה
+  glass: { born:'sup',  rate:.011, see:.75 },
   dmg:   { born:'cut',  rate:.014, see:.70 },
   meas:  { born:'cut',  rate:.007, see:.82 },
-  hole:  { born:'proc', rate:.026, see:.45 },   // ← הבעיה שאף אחד לא סוגר. קשה לראות → הרבה בורח לשטח
+  hole:  { born:'proc', rate:.026, see:.45 },
   motor: { born:'mono', rate:.012, see:.72 },
 };
 
-const CYCLE = { recv:4.5, cut:7.0, proc:9.5, mono:16.5, glaze:8.0 };  // מונובלוק = צוואר הבקבוק
+const CYCLE = { recv:4.5, cut:7.0, proc:9.5, mono:16.5, glaze:8.0 };
 const SUPPLIERS = [
   { name:'ספק א׳ — פרופילים', share:.46, rej:.058 },
   { name:'ספק ב׳ — פרופילים', share:.28, rej:.121 },
   { name:'ספק ג׳ — פרזול',    share:.16, rej:.034 },
   { name:'ספק ד׳ — מנועים',   share:.10, rej:.089 },
 ];
+const PROJECTS = ['הירדן 12 ת"א — 156/2026','רמת החייל 8 — 141/2026','שדרות רוטשילד 44 — 162/2026'];
 
 /* ═══════════════════════════════════════════════════════════
-   2. חודש נתונים מדומים — דטרמיניסטי
+   2. חודש נתונים — דטרמיניסטי
    ═══════════════════════════════════════════════════════════ */
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 const rnd = mulberry32(20260714);
@@ -485,23 +563,19 @@ const rnd = mulberry32(20260714);
 const HE_MONTH = ['בינואר','בפברואר','במרץ','באפריל','במאי','ביוני','ביולי','באוגוסט','בספטמבר','באוקטובר','בנובמבר','בדצמבר'];
 const fmtDay = d => `${d.getDate()} ${HE_MONTH[d.getMonth()]}`;
 
-// 22 ימי עבודה (א׳–ה׳) שמסתיימים ב-14.7.2026
 const DAYS = [];
 {
   const d = new Date(2026, 6, 14);
   while (DAYS.length < 22) {
-    const w = d.getDay();                      // 5=שישי, 6=שבת
+    const w = d.getDay();
     if (w !== 5 && w !== 6) DAYS.unshift(new Date(d));
     d.setDate(d.getDate() - 1);
   }
 }
-const SPIKE_DAY = 13;                          // יום המשלוח הפגום
+const SPIKE_DAY = 13;
 
-const pickFamily = () => {
-  const r = rnd() * 100; let acc = 0;
-  for (const f of FAMILIES) { acc += f.w; if (r < acc) return f; }
-  return FAMILIES[2];
-};
+const pickFamily = () => { const r = rnd()*100; let a = 0; for (const f of FAMILIES){ a += f.w; if (r < a) return f; } return FAMILIES[2]; };
+const poNum = () => 'mg-' + String(300 + Math.floor(rnd()*600)).padStart(4,'0');
 
 const units = [], defects = [], cycles = {};
 STATIONS.forEach(s => cycles[s.id] = []);
@@ -509,30 +583,31 @@ let seq = 4100;
 
 DAYS.forEach((date, di) => {
   for (let i = 0; i < 150; i++) {
-    const fam = pickFamily();
-    const uid = String(++seq);
-    const hour = 6 + Math.floor(rnd() * 10);
-    const min  = Math.floor(rnd() * 60);
+    const fam = pickFamily(), uid = String(++seq);
+    const hour = 6 + Math.floor(rnd()*10), min = Math.floor(rnd()*60);
     units.push({ uid, di, fam: fam.id });
-
-    fam.route.forEach(st => cycles[st].push(CYCLE[st] * (0.75 + rnd() * 0.55)));
+    fam.route.forEach(st => cycles[st].push(CYCLE[st] * (0.75 + rnd()*0.55)));
 
     for (const d of DEFECTS) {
       const o = ORIGIN[d.id];
       let rate = o.rate;
-      if (di === SPIKE_DAY && o.born === 'sup') rate *= 5.0;   // המשלוח הפגום
+      if (di === SPIKE_DAY && o.born === 'sup') rate *= 5.0;
       if (rnd() >= rate) continue;
 
       const bornIdx = o.born === 'sup' ? -1 : fam.route.indexOf(o.born);
-      if (o.born !== 'sup' && bornIdx === -1) continue;           // לא רלוונטי למשפחה הזאת
+      if (o.born !== 'sup' && bornIdx === -1) continue;
       const catchers = fam.route.slice(bornIdx + 1).filter(st => MENU[st].includes(d.id));
       if (!catchers.length) continue;
 
       let caughtAt = null, dist = null;
-      for (let k = 0; k < catchers.length; k++) {
+      for (let k = 0; k < catchers.length; k++)
         if (rnd() < o.see) { caughtAt = catchers[k]; dist = k; break; }
-      }
-      defects.push({ uid, di, hour, min, type: d.id, origin: o.born, caughtAt, dist });
+
+      defects.push({
+        uid, di, hour, min, type: d.id, origin: o.born, caughtAt, dist,
+        po: poNum(), project: PROJECTS[Math.floor(rnd()*3)],
+        profile: d.profile ? CUTLIST[Math.floor(rnd()*CUTLIST.length)] : null,
+      });
     }
   }
 });
@@ -545,7 +620,6 @@ const stIcon = id => stOf(id).icon;
 const dfOf   = id => DEFECTS.find(d => d.id === id);
 const srcName = id => id === 'sup' ? SUPPLIER.name : stName(id);
 
-/* ── שכבה 3: לולאת התיקון ── */
 const PROBLEMS = [
   { type:'hole',  st:'mono',  age:214, owner:null,        state:0, changed:null },
   { type:'bent',  st:'recv',  age:63,  owner:'רכש',        state:1, changed:null },
@@ -561,8 +635,12 @@ const hits = p => caught.filter(d => d.type === p.type && d.caughtAt === p.st).l
 const openProblems   = PROBLEMS.filter(p => p.state < 4);
 const closedProblems = PROBLEMS.filter(p => p.state === 4);
 
+/* פרופילים שממתינים להזמנה — 6 האחרונים עם פרופיל מזוהה */
+const toOrder = caught.filter(d => d.profile).slice(-6).reverse()
+                      .map((d, i) => ({ ...d, ordered: false, key: 'h' + i }));
+
 /* ═══════════════════════════════════════════════════════════
-   3. מסך העובד — שתי לחיצות
+   3. מסך העובד
    ═══════════════════════════════════════════════════════════ */
 const $ = id => document.getElementById(id);
 let stationId = 'recv', step = 'accept', cur = null;
@@ -573,50 +651,55 @@ const upstreamOf = id => {
   return i === 0 ? SUPPLIER : STATIONS[i - 1];
 };
 const nextUnit = () => {
-  cur = { uid: String(++seq), fam: FAMILIES[Math.floor(rnd() * 3)] };
+  cur = { uid: String(++seq), fam: FAMILIES[Math.floor(rnd()*3)], po: poNum(), bad: null };
   step = 'accept';
 };
 nextUnit();
 
-function drawBarcode(){
-  const el = $('barcode'); el.innerHTML = '';
-  for (let i = 0; i < 26; i++) {
-    const s = document.createElement('span');
-    s.style.width = (1 + Math.floor(rnd() * 3)) + 'px';
-    s.style.opacity = rnd() > .5 ? 1 : .35;
-    el.appendChild(s);
-  }
-}
-
 function renderStations(){
   $('stationPicker').innerHTML = STATIONS.map(s => `
     <button class="station ${s.id === stationId ? 'active' : ''}" data-st="${s.id}">
-      <span class="num">עמדה ${s.num}</span>
-      <span class="ico">${s.icon}</span>
-      <span class="nm">${s.name}</span>
-      <span class="cap">${s.cap}</span>
+      <span class="num">עמדה ${s.num}</span><span class="ico">${s.icon}</span>
+      <span class="nm">${s.name}</span><span class="cap">${s.cap}</span>
     </button>`).join('');
   $('stationPicker').querySelectorAll('.station').forEach(b =>
     b.onclick = () => { stationId = b.dataset.st; nextUnit(); renderStations(); renderStage(); });
+}
+
+function renderOrder(){
+  $('orderHead').innerHTML = `
+    <div class="oh-item"><div class="k">פקודת ייצור</div><div class="v big">${cur.po}</div></div>
+    <div class="oh-item"><div class="k">פרויקט</div><div class="v" style="font-size:14px">${ORDER.project}</div></div>
+    <div class="oh-item"><div class="k">פרט</div><div class="v">${ORDER.part}</div></div>
+    <div class="oh-item"><div class="k">כמות מוצרים</div><div class="v">${ORDER.qty} יח'</div></div>
+    <div class="oh-item"><div class="k">יחידה</div><div class="v">${cur.uid}</div></div>`;
+  $('cutList').innerHTML = `
+    <thead><tr><th>פרופיל</th><th>תפקיד</th><th>אורך חיתוך</th><th>כמ'</th><th>קוד זיהוי</th></tr></thead>
+    <tbody>${CUTLIST.map((r, i) => `
+      <tr class="${cur.bad === i ? 'bad' : ''}">
+        <td class="pn">${r.pn}</td>
+        <td><div class="rolecell"><span class="shape">${SHAPES[r.shape]}</span><span class="role">${r.role}</span></div></td>
+        <td class="len">${r.len}<span class="hw">${r.hw}</span></td>
+        <td class="qty">${r.qty}</td>
+        <td class="qty" style="color:var(--muted)">${ORDER.part}</td>
+      </tr>`).join('')}</tbody>`;
 }
 
 function renderStage(){
   const up = upstreamOf(stationId);
   $('pip1').className = 'pip on';
   $('pip2').className = 'pip' + (step === 'work' ? ' on' : '');
-  $('unitId').textContent = cur.uid;
-  $('unitFam').textContent = `${cur.fam.name} · ${cur.fam.series}`;
-  drawBarcode();
+  renderOrder();
 
   if (step === 'accept') {
     $('ask').textContent = 'מה שקיבלת — תקין?';
-    $('askSub').textContent = 'זו הבדיקה על העמדה שלפניך. אל תתחיל לעבוד לפני שהסתכלת.';
+    $('askSub').textContent = 'זו הבדיקה על העמדה שלפניך. אם משהו פגום — סמן איזה פרופיל, והמנהל יראה בדיוק מה להזמין.';
     $('fromChip').innerHTML = `<span class="lbl">הגיע מ־</span><span class="ico">${up.icon}</span><span>${up.name}</span>`;
     $('fromChip').style.display = '';
     $('btns').className = 'big-btns';
     $('btns').innerHTML = `
       <button class="big-btn ok"  id="bOk"><span class="g">✓</span><span class="t">תקין — מתחיל לעבוד</span></button>
-      <button class="big-btn bad" id="bNo"><span class="g">✗</span><span class="t">לא תקין — מחזיר</span></button>`;
+      <button class="big-btn bad" id="bNo"><span class="g">✗</span><span class="t">לא תקין</span></button>`;
     $('bOk').onclick = () => { step = 'work'; renderStage(); };
     $('bNo').onclick = openDefects;
   } else {
@@ -625,15 +708,21 @@ function renderStage(){
     $('fromChip').style.display = 'none';
     $('btns').className = 'big-btns single';
     $('btns').innerHTML = `<button class="big-btn ok" id="bDone"><span class="g">✓</span><span class="t">סיימתי</span></button>`;
-    $('bDone').onclick = () => { flash('ok', '✓', 'נרשם — היחידה ממשיכה'); nextUnit(); renderStage(); };
+    $('bDone').onclick = () => { flash('ok','✓','נרשם — היחידה ממשיכה',''); nextUnit(); renderStage(); };
   }
+}
+
+function overlay(html){
+  const ov = document.createElement('div');
+  ov.className = 'overlay';
+  ov.innerHTML = html;
+  document.body.appendChild(ov);
+  return ov;
 }
 
 function openDefects(){
   const up = upstreamOf(stationId);
-  const ov = document.createElement('div');
-  ov.className = 'overlay';
-  ov.innerHTML = `
+  const ov = overlay(`
     <div class="oh">מה לא תקין במה שקיבלת מ־${up.icon} ${up.name}?</div>
     <div class="defects">
       ${MENU[stationId].map(id => { const d = dfOf(id); return `
@@ -641,30 +730,91 @@ function openDefects(){
           <span class="ico">${d.icon}</span>
           <span class="cap"><b>${d.name}</b>${d.long}</span>
         </button>`; }).join('')}
-      <button class="defect cancel" data-d="">↩︎</button>
-    </div>`;
-  document.body.appendChild(ov);
+    </div>
+    <button class="cancel" data-x="1">↩︎</button>`);
   ov.onclick = e => {
+    if (e.target.closest('[data-x]')) return ov.remove();
     const b = e.target.closest('.defect'); if (!b) return;
     ov.remove();
-    if (!b.dataset.d) return;
-    const d = dfOf(b.dataset.d), now = new Date();
-    live.unshift({
-      uid: cur.uid, type: d.id, caughtAt: stationId, origin: up.id,
-      t: `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`,
-      isLive: true,
-    });
-    flash('bad', d.icon, `נרשם — חוזר ל${up.name}`);
-    nextUnit(); renderStage(); renderDash();
+    const d = dfOf(b.dataset.d);
+    if (d.profile) pickProfile(d); else record(d, null);
   };
 }
 
-function flash(kind, glyph, text){
+function pickProfile(d){
+  const ov = overlay(`
+    <div class="oh">${d.icon} ${d.name} — באיזה פרופיל?</div>
+    <div class="osub">אותה רשימה שעל הדף שלך. גע בשורה של הפרופיל הפגום.</div>
+    <div class="sheet">
+      <table class="cut pick">
+        <thead><tr><th>פרופיל</th><th>תפקיד</th><th>אורך חיתוך</th><th>כמ'</th><th>קוד זיהוי</th></tr></thead>
+        <tbody>${CUTLIST.map((r, i) => `
+          <tr data-i="${i}" tabindex="0">
+            <td class="pn">${r.pn}</td>
+            <td><div class="rolecell"><span class="shape">${SHAPES[r.shape]}</span><span class="role">${r.role}</span></div></td>
+            <td class="len">${r.len}<span class="hw">${r.hw}</span></td>
+            <td class="qty">${r.qty}</td>
+            <td class="qty" style="color:var(--muted)">${ORDER.part}</td>
+          </tr>`).join('')}</tbody>
+      </table>
+    </div>
+    <button class="cancel" data-x="1">↩︎</button>`);
+  ov.onclick = e => {
+    if (e.target.closest('[data-x]')) return ov.remove();
+    const tr = e.target.closest('tr[data-i]'); if (!tr) return;
+    ov.remove();
+    record(d, CUTLIST[+tr.dataset.i]);
+  };
+}
+
+function record(d, profile){
+  const up = upstreamOf(stationId), now = new Date();
+  live.unshift({
+    kind:'defect', uid: cur.uid, type: d.id, caughtAt: stationId, origin: up.id,
+    po: cur.po, project: ORDER.project, profile,
+    t: `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`, isLive: true,
+  });
+  if (profile) toOrder.unshift({
+    uid: cur.uid, type: d.id, caughtAt: stationId, po: cur.po, project: ORDER.project,
+    profile, ordered: false, key: 'L' + live.length, isLive: true,
+  });
+  flash('bad', d.icon, `נרשם — חוזר ל${up.name}`,
+        profile ? `${profile.pn} · ${profile.len} ${profile.hw}` : '');
+  nextUnit(); renderStage(); renderDash();
+}
+
+function openMove(){
+  const ov = overlay(`
+    <div class="oh">🔀 להעביר את יחידה ${cur.uid} לאיזו עמדה?</div>
+    <div class="osub">מה שקורה באמת ברצפה — לא מה שמצויר בתרשים. כל מעבר נרשם, וכך נבנית מפת הזרימה האמיתית.</div>
+    <div class="st-pick">
+      ${STATIONS.map(s => `
+        <button class="st-opt ${s.id === stationId ? 'here' : ''}" data-st="${s.id}" ${s.id === stationId ? 'disabled' : ''}>
+          <span class="num">עמדה ${s.num}</span><span class="ico">${s.icon}</span><span class="nm">${s.name}</span>
+        </button>`).join('')}
+    </div>
+    <button class="cancel" data-x="1">↩︎</button>`);
+  ov.onclick = e => {
+    if (e.target.closest('[data-x]')) return ov.remove();
+    const b = e.target.closest('.st-opt'); if (!b || b.disabled) return;
+    ov.remove();
+    const to = stOf(b.dataset.st), now = new Date();
+    live.unshift({
+      kind:'move', uid: cur.uid, from: stationId, to: to.id,
+      t: `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`, isLive: true,
+    });
+    flash('move', '🔀', `יחידה ${cur.uid} הועברה`, `${stName(stationId)} → ${to.name}`);
+    nextUnit(); renderStage(); renderDash();
+  };
+}
+$('moveBtn').onclick = openMove;
+
+function flash(kind, glyph, text, sub){
   const el = document.createElement('div');
   el.className = 'flash ' + kind;
-  el.innerHTML = `<span class="g">${glyph}</span><span class="t">${text}</span>`;
+  el.innerHTML = `<span class="g">${glyph}</span><span class="t">${text}</span>${sub ? `<span class="s">${sub}</span>` : ''}`;
   document.body.appendChild(el);
-  setTimeout(() => el.remove(), 640);
+  setTimeout(() => el.remove(), 720);
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -680,18 +830,35 @@ function hook(el, html){
   el.addEventListener('mouseleave', () => tip.style.display = 'none');
 }
 
+function renderToOrder(){
+  $('orderRows').innerHTML = toOrder.slice(0, 8).map((o, i) => {
+    const d = dfOf(o.type), p = o.profile;
+    return `<tr class="${o.isLive ? 'live' : ''}">
+      <td class="pn">${p.pn}</td>
+      <td><div class="rolecell"><span class="shape">${SHAPES[p.shape]}</span><span>${p.role}</span></div></td>
+      <td class="len">${p.len} <span style="color:var(--muted);font-size:12px">${p.hw}</span></td>
+      <td class="num">${p.qty}</td>
+      <td>${o.po}<div class="sub">${o.project}</div></td>
+      <td><span style="font-size:18px;margin-inline-end:6px">${d.icon}</span>${d.name}
+          <div class="sub">נתפס ב${stName(o.caughtAt)}</div></td>
+      <td><button class="btn-order ${o.ordered ? 'done' : ''}" data-i="${i}">
+            ${o.ordered ? '✓ הוזמן' : 'הזמנתי'}</button></td>
+    </tr>`;
+  }).join('');
+  $('orderRows').querySelectorAll('.btn-order').forEach(b => b.onclick = () => {
+    toOrder[+b.dataset.i].ordered = true; renderToOrder();
+  });
+}
+
 function renderProblems(){
   $('probRows').innerHTML = [...openProblems, ...closedProblems].map(p => {
     const d = dfOf(p.type), closed = p.state === 4;
     const dots = [0,1,2,3,4].map(i => `<span class="d ${i <= p.state ? 'on' : ''}"></span>`).join('');
     return `<tr class="${closed ? 'closed' : ''}">
-      <td>
-        <span class="em">${d.icon}</span><span class="what">${d.name}</span>
-        <div class="where">נתפס ב${stName(p.st)} · המקור: ${srcName(ORIGIN[p.type].born)}</div>
-      </td>
+      <td><span class="em">${d.icon}</span><span class="what">${d.name}</span>
+          <div class="where">נתפס ב${stName(p.st)} · המקור: ${srcName(ORIGIN[p.type].born)}</div></td>
       <td class="num">${hits(p)}</td>
-      <td>${closed ? '<span class="pill closed">✓ נסגר</span>'
-                   : `<span class="age ${ageClass(p.age)}">${p.age} יום</span>`}</td>
+      <td>${closed ? '<span class="pill closed">✓ נסגר</span>' : `<span class="age ${ageClass(p.age)}">${p.age} יום</span>`}</td>
       <td>${p.owner || '<span class="pill none">⚠︎ ללא אחראי</span>'}</td>
       <td class="state"><span class="dotline">${dots}</span>${STATE_NAMES[p.state]}</td>
       <td class="changed">${p.changed ? '<b>' + p.changed + '</b>' : '—'}</td>
@@ -701,14 +868,13 @@ function renderProblems(){
 
 function renderKpis(){
   const oldest = Math.max(...openProblems.map(p => p.age));
-  const bn = STATIONS.map(s => ({ s, m: cycles[s.id].reduce((a,b) => a+b, 0) / cycles[s.id].length }))
+  const bn = STATIONS.map(s => ({ s, m: cycles[s.id].reduce((a,b)=>a+b,0)/cycles[s.id].length }))
                      .reduce((a,b) => b.m > a.m ? b : a);
-  const rate = (defects.length / units.length * 100).toFixed(1);
   const K = [
     { l:'בעיות שנסגרו<br>— המספר האמיתי', v: closedProblems.length, c:'good', s:'הסיבה הוסרה, לא רק הפגם' },
-    { l:'בעיות פתוחות',        v: openProblems.length, c:'crit', s: openProblems.filter(p => !p.owner).length + ' ללא אחראי' },
+    { l:'בעיות פתוחות',        v: openProblems.length, c:'crit', s: openProblems.filter(p=>!p.owner).length + ' ללא אחראי' },
     { l:'הבעיה הוותיקה ביותר', v: oldest + ' יום',     c:'crit', s:'🕳️ חורי מעבר חסרים' },
-    { l:'פגמים שנתפסו',        v: caught.length,       c:'',     s: rate + '% מהיחידות' },
+    { l:'פגמים שנתפסו',        v: caught.length,       c:'',     s:(defects.length/units.length*100).toFixed(1)+'% מהיחידות' },
     { l:'ברחו לשטח',           v: escaped.length,      c:'crit', s:'אף עמדה לא ראתה אותם' },
     { l:'צוואר הבקבוק',        v: bn.s.icon,           c:'',     s: bn.s.name + ' · ' + bn.m.toFixed(1) + ' דק׳' },
   ];
@@ -717,178 +883,149 @@ function renderKpis(){
 }
 
 function renderPareto(){
-  const rows = DEFECTS.map(d => ({ d, n: caught.filter(x => x.type === d.id).length }))
-                      .sort((a,b) => b.n - a.n);
-  const total = rows.reduce((a,b) => a + b.n, 0) || 1;
-  const W = 640, H = 250, PT = 18, PB = 48, PL = 12, PR = 38;
-  const bw = (W - PL - PR) / rows.length, max = rows[0].n || 1;
-  const y  = v => PT + (H - PT - PB) * (1 - v / max);
-  const yc = p => PT + (H - PT - PB) * (1 - p);
-
-  let acc = 0;
-  const pts = rows.map((r, i) => { acc += r.n; return [PL + bw * (i + .5), yc(acc / total)]; });
-
-  const bars = rows.map((r, i) => {
-    const x = PL + bw * i + 4, w = bw - 8;
-    return `<g>
-      <rect x="${x}" y="${y(r.n)}" width="${w}" height="${Math.max((H-PB) - y(r.n), 1)}" rx="4"
-        fill="${i === 0 ? 'var(--series-deep)' : 'var(--series)'}" data-i="${i}"></rect>
-      <text class="vlabel" x="${x + w/2}" y="${y(r.n) - 6}" text-anchor="middle">${r.n}</text>
-      <text x="${x + w/2}" y="${H - PB + 22}" text-anchor="middle" font-size="19">${r.d.icon}</text>
-      <text class="axistext" x="${x + w/2}" y="${H - PB + 38}" text-anchor="middle">${Math.round(r.n/total*100)}%</text>
-    </g>`;
-  }).join('');
-
-  $('pareto').innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="פארטו — פגמים לפי סוג">
-    ${[0,.25,.5,.75,1].map(p => `<line class="gridline" x1="${PL}" x2="${W-PR}" y1="${yc(p)}" y2="${yc(p)}"></line>`).join('')}
-    <line class="axisline" x1="${PL}" x2="${W-PR}" y1="${H-PB}" y2="${H-PB}"></line>
-    ${bars}
-    <polyline points="${pts.map(p => p.join(',')).join(' ')}" fill="none" stroke="var(--ink-2)" stroke-width="2"></polyline>
-    ${pts.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="var(--surface)" stroke="var(--ink-2)" stroke-width="2"></circle>`).join('')}
-    ${[0,.5,1].map(p => `<text class="axistext" x="${W-PR+8}" y="${yc(p)+4}">${p*100}%</text>`).join('')}
-  </svg>`;
-
-  $('pareto').querySelectorAll('rect').forEach(r => {
-    const x = rows[+r.dataset.i];
-    hook(r, `<b>${x.d.icon} ${x.d.name}</b><br>${x.d.long}<br>${x.n} מקרים · ${Math.round(x.n/total*100)}% מהפגמים`);
-  });
+  const rows = DEFECTS.map(d => ({ d, n: caught.filter(x => x.type === d.id).length })).sort((a,b) => b.n - a.n);
+  const total = rows.reduce((a,b) => a+b.n, 0) || 1;
+  const W=640,H=250,PT=18,PB=48,PL=12,PR=38;
+  const bw=(W-PL-PR)/rows.length, max=rows[0].n||1;
+  const y=v=>PT+(H-PT-PB)*(1-v/max), yc=p=>PT+(H-PT-PB)*(1-p);
+  let acc=0; const pts=rows.map((r,i)=>{acc+=r.n;return [PL+bw*(i+.5), yc(acc/total)];});
+  const bars = rows.map((r,i)=>{ const x=PL+bw*i+4, w=bw-8;
+    return `<g><rect x="${x}" y="${y(r.n)}" width="${w}" height="${Math.max((H-PB)-y(r.n),1)}" rx="4"
+      fill="${i===0?'var(--series-deep)':'var(--series)'}" data-i="${i}"></rect>
+      <text class="vlabel" x="${x+w/2}" y="${y(r.n)-6}" text-anchor="middle">${r.n}</text>
+      <text x="${x+w/2}" y="${H-PB+22}" text-anchor="middle" font-size="19">${r.d.icon}</text>
+      <text class="axistext" x="${x+w/2}" y="${H-PB+38}" text-anchor="middle">${Math.round(r.n/total*100)}%</text></g>`;}).join('');
+  $('pareto').innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="פארטו">
+    ${[0,.25,.5,.75,1].map(p=>`<line class="gridline" x1="${PL}" x2="${W-PR}" y1="${yc(p)}" y2="${yc(p)}"></line>`).join('')}
+    <line class="axisline" x1="${PL}" x2="${W-PR}" y1="${H-PB}" y2="${H-PB}"></line>${bars}
+    <polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="var(--ink-2)" stroke-width="2"></polyline>
+    ${pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="var(--surface)" stroke="var(--ink-2)" stroke-width="2"></circle>`).join('')}
+    ${[0,.5,1].map(p=>`<text class="axistext" x="${W-PR+8}" y="${yc(p)+4}">${p*100}%</text>`).join('')}</svg>`;
+  $('pareto').querySelectorAll('rect').forEach(r => { const x = rows[+r.dataset.i];
+    hook(r, `<b>${x.d.icon} ${x.d.name}</b><br>${x.n} מקרים · ${Math.round(x.n/total*100)}%`); });
 }
 
 function renderTrend(){
-  const per = DAYS.map((_, i) => caught.filter(d => d.di === i).length);
-  const W = 640, H = 250, PT = 24, PB = 40, PL = 30, PR = 12;
-  const max = Math.max(...per) * 1.15;
-  const bw  = (W - PL - PR) / per.length;
-  const y   = v => PT + (H - PT - PB) * (1 - v / max);
-
-  const bars = per.map((v, i) => {
-    const x = PL + bw * i + 2, w = bw - 4;
-    return `<rect x="${x}" y="${y(v)}" width="${w}" height="${Math.max((H-PB) - y(v), 1)}" rx="3"
-      fill="${i === SPIKE_DAY ? 'var(--critical)' : 'var(--series)'}" data-i="${i}"></rect>`;
-  }).join('');
-
-  $('trend').innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="פגמים ליום לאורך החודש">
-    ${[0,.5,1].map(p => `<line class="gridline" x1="${PL}" x2="${W-PR}" y1="${y(max*p)}" y2="${y(max*p)}"></line>`).join('')}
-    <line class="axisline" x1="${PL}" x2="${W-PR}" y1="${H-PB}" y2="${H-PB}"></line>
-    ${bars}
-    <text class="axistext" x="${PL-7}" y="${y(0)+4}"      text-anchor="end">0</text>
-    <text class="axistext" x="${PL-7}" y="${y(max)+10}"   text-anchor="end">${Math.round(max)}</text>
-    <text class="axistext" x="${PL}"   y="${H-14}">${fmtDay(DAYS[0])}</text>
+  const per = DAYS.map((_,i) => caught.filter(d => d.di===i).length);
+  const W=640,H=250,PT=24,PB=40,PL=30,PR=12;
+  const max=Math.max(...per)*1.15, bw=(W-PL-PR)/per.length;
+  const y=v=>PT+(H-PT-PB)*(1-v/max);
+  const bars = per.map((v,i)=>`<rect x="${PL+bw*i+2}" y="${y(v)}" width="${bw-4}" height="${Math.max((H-PB)-y(v),1)}" rx="3"
+    fill="${i===SPIKE_DAY?'var(--critical)':'var(--series)'}" data-i="${i}"></rect>`).join('');
+  $('trend').innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="מגמה חודשית">
+    ${[0,.5,1].map(p=>`<line class="gridline" x1="${PL}" x2="${W-PR}" y1="${y(max*p)}" y2="${y(max*p)}"></line>`).join('')}
+    <line class="axisline" x1="${PL}" x2="${W-PR}" y1="${H-PB}" y2="${H-PB}"></line>${bars}
+    <text class="axistext" x="${PL-7}" y="${y(0)+4}" text-anchor="end">0</text>
+    <text class="axistext" x="${PL-7}" y="${y(max)+10}" text-anchor="end">${Math.round(max)}</text>
+    <text class="axistext" x="${PL}" y="${H-14}">${fmtDay(DAYS[0])}</text>
     <text class="axistext" x="${W-PR}" y="${H-14}" text-anchor="end">${fmtDay(DAYS[DAYS.length-1])}</text>
-    <text class="vlabel" x="${PL + bw*SPIKE_DAY + bw/2}" y="${y(per[SPIKE_DAY]) - 8}"
-      text-anchor="middle" fill="var(--crit-text)">משלוח פגום</text>
-  </svg>`;
-
-  $('trend').querySelectorAll('rect').forEach(r => {
-    const i = +r.dataset.i;
-    hook(r, `<b>${fmtDay(DAYS[i])}</b><br>${per[i]} פגמים נתפסו<br>150 יחידות באותו יום`);
-  });
+    <text class="vlabel" x="${PL+bw*SPIKE_DAY+bw/2}" y="${y(per[SPIKE_DAY])-8}" text-anchor="middle" fill="var(--crit-2)">משלוח פגום</text></svg>`;
+  $('trend').querySelectorAll('rect').forEach(r => { const i = +r.dataset.i;
+    hook(r, `<b>${fmtDay(DAYS[i])}</b><br>${per[i]} פגמים · 150 יחידות`); });
 }
 
 function renderDist(){
   const at = k => caught.filter(d => d.dist === k).length;
   const cells = [
-    { v: at(0), l:'נתפס בהזדמנות הראשונה', cls:'hero' },
-    { v: at(1), l:'פוספס פעם אחת',         cls:'' },
-    { v: at(2), l:'פוספס פעמיים',          cls:'' },
-    { v: caught.filter(d => d.dist >= 3).length, l:'פוספס שלוש פעמים ומעלה', cls:'' },
-    { v: escaped.length, l:'אף אחד לא תפס — ברח לשטח', cls:'esc' },
+    { v:at(0), l:'נתפס בהזדמנות הראשונה', cls:'hero' },
+    { v:at(1), l:'פוספס פעם אחת',          cls:'' },
+    { v:at(2), l:'פוספס פעמיים',           cls:'' },
+    { v:caught.filter(d=>d.dist>=3).length, l:'פוספס שלוש ומעלה', cls:'' },
+    { v:escaped.length, l:'אף אחד לא תפס — ברח לשטח', cls:'esc' },
   ];
-  $('dist').innerHTML = cells.map(c =>
-    `<div class="dbox ${c.cls}"><div class="v">${c.v}</div><div class="l">${c.l}</div></div>`).join('');
+  $('dist').innerHTML = cells.map(c => `<div class="dbox ${c.cls}"><div class="v">${c.v}</div><div class="l">${c.l}</div></div>`).join('');
 }
 
 function renderHeat(){
-  const cell = (st, ty) => caught.filter(d => d.caughtAt === st && d.type === ty).length;
-  const max  = Math.max(...STATIONS.flatMap(s => DEFECTS.map(d => cell(s.id, d.id))), 1);
-  const ramp = ['var(--s100)','var(--s200)','var(--s300)','var(--s400)','var(--s500)','var(--s600)','var(--s700)'];
-  const bg  = n => n === 0 ? 'var(--sunk)' : ramp[Math.min(6, Math.floor(n / max * 6 + .4))];
-  const fg  = n => n === 0 ? 'var(--muted)' : (n / max > .5 ? '#fff' : 'var(--ink)');
-
+  const cell = (st,ty) => caught.filter(d => d.caughtAt===st && d.type===ty).length;
+  const max  = Math.max(...STATIONS.flatMap(s => DEFECTS.map(d => cell(s.id,d.id))), 1);
+  const ramp = ['var(--s1)','var(--s2)','var(--s3)','var(--s4)','var(--s5)','var(--s6)','var(--s7)'];
+  const bg = n => n===0 ? 'var(--s0)' : ramp[Math.min(6, Math.floor(n/max*6+.4))];
+  const fg = n => n===0 ? 'var(--muted)' : (n/max > .55 ? '#06121F' : '#fff');
   $('heat').innerHTML = `<table>
-    <thead><tr><th class="row"></th>${DEFECTS.map(d => `<th>${d.icon}</th>`).join('')}</tr></thead>
-    <tbody>${STATIONS.map(s => `<tr>
-      <th class="row">${s.icon} ${s.name}</th>
-      ${DEFECTS.map(d => { const n = cell(s.id, d.id);
-        return `<td><span class="cell" data-s="${s.id}" data-d="${d.id}"
-          style="background:${bg(n)};color:${fg(n)}">${n || '·'}</span></td>`; }).join('')}
+    <thead><tr><th class="row"></th>${DEFECTS.map(d=>`<th>${d.icon}</th>`).join('')}</tr></thead>
+    <tbody>${STATIONS.map(s=>`<tr><th class="row">${s.icon} ${s.name}</th>
+      ${DEFECTS.map(d=>{const n=cell(s.id,d.id);
+        return `<td><span class="cell" data-s="${s.id}" data-d="${d.id}" style="background:${bg(n)};color:${fg(n)}">${n||'·'}</span></td>`;}).join('')}
     </tr>`).join('')}</tbody></table>`;
-
   $('heat').querySelectorAll('.cell').forEach(c => {
     const n = cell(c.dataset.s, c.dataset.d), d = dfOf(c.dataset.d);
-    hook(c, `<b>${stIcon(c.dataset.s)} ${stName(c.dataset.s)}</b><br>${d.icon} ${d.name}<br>${n} מקרים נתפסו כאן`);
+    hook(c, `<b>${stIcon(c.dataset.s)} ${stName(c.dataset.s)}</b><br>${d.icon} ${d.name} — ${n} מקרים`);
   });
 }
 
 function renderCycle(){
-  const rows = STATIONS.map(s => ({ s, m: cycles[s.id].reduce((a,b) => a+b, 0) / cycles[s.id].length }));
-  const max  = Math.max(...rows.map(r => r.m));
+  const rows = STATIONS.map(s => ({ s, m: cycles[s.id].reduce((a,b)=>a+b,0)/cycles[s.id].length }));
+  const max = Math.max(...rows.map(r=>r.m));
   $('cycle').innerHTML = rows.map(r => `
-    <div class="hbar ${r.m === max ? 'max' : ''}" data-s="${r.s.id}">
-      <span class="lbl"><span class="em">${r.s.icon}</span>${r.s.name}${r.m === max ? '<span class="badge">צוואר בקבוק</span>' : ''}</span>
+    <div class="hbar ${r.m===max?'max':''}" data-s="${r.s.id}">
+      <span class="lbl"><span class="em">${r.s.icon}</span>${r.s.name}${r.m===max?'<span class="badge">צוואר בקבוק</span>':''}</span>
       <span class="track"><span class="fill" style="width:${r.m/max*100}%"></span></span>
-      <span class="val">${r.m.toFixed(1)}</span>
-    </div>`).join('');
+      <span class="val">${r.m.toFixed(1)}</span></div>`).join('');
   $('cycle').querySelectorAll('.hbar').forEach(el => {
     const r = rows.find(x => x.s.id === el.dataset.s);
-    hook(el, `<b>${r.s.name}</b><br>${r.m.toFixed(1)} דקות ליחידה בממוצע<br>נמדד לבד משתי הלחיצות`);
+    hook(el, `<b>${r.s.name}</b><br>${r.m.toFixed(1)} דקות ליחידה<br>נמדד לבד משתי הלחיצות`);
   });
 }
 
 function renderSuppliers(){
-  const max = Math.max(...SUPPLIERS.map(s => s.rej));
-  $('suppliers').innerHTML = SUPPLIERS.map((s, i) => `
-    <div class="hbar ${s.rej === max ? 'max' : ''}" data-i="${i}">
+  const max = Math.max(...SUPPLIERS.map(s=>s.rej));
+  $('suppliers').innerHTML = SUPPLIERS.map((s,i) => `
+    <div class="hbar ${s.rej===max?'max':''}" data-i="${i}">
       <span class="lbl">${s.name}</span>
       <span class="track"><span class="fill" style="width:${s.rej/max*100}%"></span></span>
-      <span class="val">${(s.rej*100).toFixed(1)}%</span>
-    </div>`).join('');
+      <span class="val">${(s.rej*100).toFixed(1)}%</span></div>`).join('');
   $('suppliers').querySelectorAll('.hbar').forEach(el => {
     const s = SUPPLIERS[+el.dataset.i];
-    hook(el, `<b>${s.name}</b><br>${(s.rej*100).toFixed(1)}% מהאצוות נדחו בקבלת החומר<br>${Math.round(s.share*100)}% מהנפח שלנו`);
+    hook(el, `<b>${s.name}</b><br>${(s.rej*100).toFixed(1)}% מהאצוות נדחו<br>${Math.round(s.share*100)}% מהנפח`);
   });
 }
 
 function renderAudit(){
-  const n = Math.round(units.length / 50);
+  const n = Math.round(units.length/50);
   const rows = [
     { icon:'🧴', t:'גומייה שלא יושבת עד הסוף', n:9 },
     { icon:'🔩', t:'בורג לא מהודק כנדרש',      n:6 },
     { icon:'💧', t:'סיליקון חסר מתחת לטי',     n:4 },
     { icon:'📏', t:'ריווח קלינים לא תקין',     n:3 },
   ];
-  const tot = rows.reduce((a,b) => a + b.n, 0);
+  const tot = rows.reduce((a,b)=>a+b.n,0);
   $('audit').innerHTML = `
     <div class="dist" style="grid-template-columns:1fr 1fr;margin-bottom:14px">
       <div class="dbox"><div class="v">${n}</div><div class="l">יחידות נבדקו לעומק</div></div>
       <div class="dbox esc"><div class="v">${tot}</div><div class="l">פגמים שאף עמדה לא יכלה לראות</div></div>
     </div>
-    ${rows.map(r => `<div class="hbar" style="grid-template-columns:1fr 74px">
+    ${rows.map(r=>`<div class="hbar" style="grid-template-columns:1fr 74px">
       <span class="lbl"><span class="em">${r.icon}</span>${r.t}</span>
       <span class="val">${r.n} מקרים</span></div>`).join('')}`;
 }
 
 function renderFeed(){
-  const hist = caught.slice(-10).reverse().map(d => ({
-    uid: d.uid, type: d.type, caughtAt: d.caughtAt, origin: d.origin,
-    t: `${String(d.hour).padStart(2,'0')}:${String(d.min).padStart(2,'0')}`, isLive: false,
+  const hist = caught.slice(-9).reverse().map(d => ({
+    kind:'defect', uid:d.uid, type:d.type, caughtAt:d.caughtAt, origin:d.origin, profile:d.profile,
+    t:`${String(d.hour).padStart(2,'0')}:${String(d.min).padStart(2,'0')}`, isLive:false,
   }));
   $('feedRows').innerHTML = [...live, ...hist].slice(0, 12).map(r => {
+    if (r.kind === 'move') return `<tr class="mv ${r.isLive?'live':''}">
+      <td class="mono">${r.isLive?'עכשיו':r.t}</td>
+      <td>${stIcon(r.from)} ${stName(r.from)}</td>
+      <td class="mono">${r.uid}</td>
+      <td><span class="em">🔀</span>הועבר לעמדה אחרת</td>
+      <td>← ${stIcon(r.to)} ${stName(r.to)}</td></tr>`;
     const d = dfOf(r.type);
-    return `<tr class="${r.isLive ? 'live' : ''}">
-      <td class="mono">${r.isLive ? 'עכשיו' : r.t}</td>
+    return `<tr class="${r.isLive?'live':''}">
+      <td class="mono">${r.isLive?'עכשיו':r.t}</td>
       <td>${stIcon(r.caughtAt)} ${stName(r.caughtAt)}</td>
       <td class="mono">${r.uid}</td>
-      <td><span class="em">${d.icon}</span>${d.name}</td>
-      <td style="color:var(--muted)">${srcName(r.origin)}</td>
-    </tr>`;
+      <td><span class="em">${d.icon}</span>${d.name}${r.profile?`<span style="color:var(--muted)"> · ${r.profile.pn} · ${r.profile.len}${r.profile.hw}</span>`:''}</td>
+      <td style="color:var(--muted)">${srcName(r.origin)}</td></tr>`;
   }).join('');
 }
 
 function renderDash(){
   $('period').textContent = `${fmtDay(DAYS[0])} – ${fmtDay(DAYS[DAYS.length-1])} 2026 · ${DAYS.length} ימי עבודה`;
   $('unitCount').textContent = units.length.toLocaleString('he-IL');
-  renderProblems(); renderKpis(); renderPareto(); renderTrend();
+  renderToOrder(); renderProblems(); renderKpis(); renderPareto(); renderTrend();
   renderDist(); renderHeat(); renderCycle(); renderSuppliers(); renderAudit(); renderFeed();
 }
 
@@ -907,9 +1044,7 @@ function show(which){
 $('tabWorker').onclick = () => show('worker');
 $('tabDash').onclick   = () => show('dash');
 
-renderStations();
-renderStage();
-renderDash();
+renderStations(); renderStage(); renderDash();
 if (location.hash === '#dash') show('dash');
 </script>
 </body>
